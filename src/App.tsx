@@ -21,13 +21,18 @@ import {
 } from './utils/storage';
 import { setSoundEnabled, playSuccessTone } from './utils/audio';
 import { trackEvent } from './utils/analytics';
+import { parseBattleQuery } from './utils/battle';
 import { Swords, X, Sparkles } from 'lucide-react';
 
 export default function App() {
   // State management
   const [userProgress, setUserProgress] = useState<UserProgress>(loadUserProgress);
   const [preferences, setPreferences] = useState<UserPreferences>(loadUserPreferences);
+  const [systemPrefersReducedMotion, setSystemPrefersReducedMotion] = useState(
+    () => typeof window !== 'undefined' && (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false)
+  );
   const [activeTab, setActiveTab] = useState<'feed' | 'lab' | 'articles'>('feed');
+  const reducedMotionActive = preferences.reducedMotion || systemPrefersReducedMotion;
 
   // Modal triggers
   const [dailyOpen, setDailyOpen] = useState(false);
@@ -49,28 +54,40 @@ export default function App() {
     setSoundEnabled(preferences.soundEnabled);
   }, [preferences.soundEnabled]);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (!mediaQuery) return;
+
+    const handleChange = (event: MediaQueryListEvent) => setSystemPrefersReducedMotion(event.matches);
+    setSystemPrefersReducedMotion(mediaQuery.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.reducedMotion = String(reducedMotionActive);
+  }, [reducedMotionActive]);
+
   // Check URL query params on mount for incoming battle challenge
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     try {
-      const urlParams = new URLSearchParams(window.location.search);
-      const isBattle = urlParams.get('battle');
-      const challenger = urlParams.get('challenger');
-      const illId = urlParams.get('ill');
-      const targetTime = urlParams.get('time');
+      const battle = parseBattleQuery(
+        window.location.search,
+        ILLUSIONS_DATA.map(illusion => illusion.id)
+      );
 
-      if (isBattle && illId) {
-        const found = ILLUSIONS_DATA.find(i => i.id === illId);
+      if (battle) {
+        const found = ILLUSIONS_DATA.find(i => i.id === battle.illusionId);
         if (found) {
           setIncomingDuel({
-            challenger: challenger || 'Um amigo',
-            time: targetTime ? Number(targetTime) : 6.0,
+            challenger: battle.challenger,
+            time: battle.time,
             illusion: found
           });
           trackEvent('battle_invite_received', {
-            challenger,
-            illusionId: illId
+            illusionId: battle.illusionId
           });
         }
       }
@@ -192,12 +209,12 @@ export default function App() {
             userProgress={userProgress}
             onProgressUpdate={handleProgressUpdate}
             onChallengeFriend={handleOpenBattle}
-            reducedMotion={preferences.reducedMotion}
+            reducedMotion={reducedMotionActive}
           />
         )}
 
         {activeTab === 'lab' && (
-          <LabView />
+          <LabView reducedMotion={reducedMotionActive} />
         )}
 
         {activeTab === 'articles' && (
@@ -215,7 +232,7 @@ export default function App() {
         userProgress={userProgress}
         onProgressUpdate={handleProgressUpdate}
         onShare={handleShareDaily}
-        reducedMotion={preferences.reducedMotion}
+        reducedMotion={reducedMotionActive}
       />
 
       <BattleModal
@@ -236,7 +253,8 @@ export default function App() {
         onClose={() => setSettingsOpen(false)}
         soundEnabled={preferences.soundEnabled}
         onToggleSound={handleToggleSound}
-        reducedMotion={preferences.reducedMotion}
+        reducedMotion={reducedMotionActive}
+        systemPrefersReducedMotion={systemPrefersReducedMotion}
         onToggleReducedMotion={handleToggleReducedMotion}
         onResetData={handleResetData}
       />

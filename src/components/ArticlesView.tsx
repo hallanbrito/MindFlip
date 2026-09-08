@@ -14,7 +14,7 @@ const ARTICLES: Article[] = [
   {
     id: 'percepcao-biestavel',
     title: 'O que são Ilusões Biestáveis e Por Que o Cérebro Inverte a Imagem?',
-    snippet: 'Entenda como o córtex visual lida com ambiguidades visuais através da inibição recíproca entre populações de neurônios.',
+    snippet: 'Entenda como estímulos ambíguos podem sustentar mais de uma interpretação perceptiva.',
     readTime: '4 min de leitura',
     content: (
       <div className="space-y-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
@@ -23,17 +23,20 @@ const ARTICLES: Article[] = [
         </p>
         <h4 className="text-white font-bold text-sm sm:text-base mt-2">Como o Cérebro Processa a Ambiguidade?</h4>
         <p>
-          A retina humana captura apenas um mosaico bidimensional de fótons que chegam ao olho. Cabe ao córtex visual primário (V1) e às áreas de processamento de ordem superior reconstruir um modelo tridimensional plausível do mundo externo.
+          A imagem que chega aos olhos é bidimensional, e o sistema visual combina pistas do estímulo com contexto e experiência para formar uma interpretação perceptiva.
         </p>
         <p>
-          Quando a imagem não contém pistas de oclusão ou sombreamento suficientes para descartar uma das direções (como na silhueta preta giratória), duas populações neurais concorrentes entram em jogo. A primeira população codifica a rotação horária; a segunda, anti-horária.
+          Quando faltam pistas capazes de definir uma única interpretação, como na silhueta giratória, a percepção pode alternar mesmo que o estímulo permaneça igual. Processos sensoriais e cognitivos participam dessas mudanças.
         </p>
-        <h4 className="text-white font-bold text-sm sm:text-base mt-2">O Fenômeno da Fadiga Neural e a Inversão</h4>
+        <h4 className="text-white font-bold text-sm sm:text-base mt-2">Como os modelos explicam a inversão</h4>
         <p>
-          Enquanto você observa o estímulo girando para a direita, os neurônios responsáveis por essa interpretação disparam ativamente e inibem os neurônios rivais (inibição mútua). No entanto, após alguns segundos, esses neurônios sofrem <em>adaptação neural</em> (ou fadiga sináptica).
+          Modelos científicos incluem competição entre interpretações, adaptação e variações espontâneas da atividade neural. Esses mecanismos ajudam a explicar as alternâncias, mas não permitem atribuir cada inversão a uma única causa observável pelo site.
         </p>
         <p>
-          Com o declínio gradual de sua taxa de disparo, a inibição sobre a população concorrente diminui, permitindo que a segunda hipótese assuma a consciência. É exatamente nesse instante que você experimenta o "flip" mental!
+          No MindFlip, o “flip” registra apenas o relato do usuário de que sua percepção mudou; ele não mede diretamente atividade cerebral.
+        </p>
+        <p className="text-[11px] text-slate-400">
+          Fonte: <a className="text-cyan-400 underline" href="https://pubmed.ncbi.nlm.nih.gov/32612780/" target="_blank" rel="noreferrer">revisão sobre percepção biestável</a>.
         </p>
       </div>
     )
@@ -41,19 +44,22 @@ const ARTICLES: Article[] = [
   {
     id: 'desvanecimento-troxler',
     title: 'O Efeito Troxler: Por Que Cores e Formas Desaparecem Quando Fixamos os Olhos?',
-    snippet: 'Descubra a razão evolutiva pela qual o sistema visual humano ignora estímulos perfeitamente constantes no campo periférico.',
+    snippet: 'Entenda por que um alvo periférico pouco variável pode perder visibilidade durante a fixação.',
     readTime: '3 min de leitura',
     content: (
       <div className="space-y-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
         <p>
-          Descoberto em 1804 pelo médico suíço Ignaz Paul Vital Troxler, o <strong>desvanecimento de Troxler</strong> demonstra que qualquer estímulo visual estático localizado na retina periférica tende a desaparecer da percepção consciente se o observador mantiver a fixação rigorosa em um único ponto.
+          O <strong>desvanecimento de Troxler</strong> descreve a redução de visibilidade que alguns alvos periféricos podem apresentar durante a fixação prolongada. O resultado varia com contraste, tamanho, distância do ponto fixado e movimentos dos olhos.
         </p>
         <h4 className="text-white font-bold text-sm sm:text-base mt-2">Adaptação Sensorial e Micro-movimentos Oculares</h4>
         <p>
-          Os fotorreceptores e as células ganglionares da retina são detectores de variação: eles evoluíram para sinalizar mudanças no ambiente (movimento de predadores, presas, luzes cambiantes).
+          Mesmo quando tentamos manter os olhos parados, ocorrem pequenos movimentos involuntários, incluindo microssacadas e deriva ocular. Eles alteram a imagem na retina e podem ajudar a recuperar a visibilidade de estímulos que estavam desaparecendo.
         </p>
         <p>
-          Na visão central (fóvea), nossos olhos realizam involuntariamente milhares de minúsculos tremores por segundo chamados <em>microssacadas</em>. Essas microssacadas mantêm os cones foveais em constante renovação de sinal. Na periferia retiniana, porém, onde o campo receptivo de cada neurônio é muito mais amplo, as microssacadas não são suficientes para alterar o padrão de fótons: o estímulo estático é considerado ruído constante e "apagado" pelo cérebro, que preenche a lacuna com a cor do fundo.
+          A relação entre movimentos oculares, adaptação e desvanecimento é estudada experimentalmente e não se resume a uma frequência fixa ou a um único tipo de movimento.
+        </p>
+        <p className="text-[11px] text-slate-400">
+          Fonte: <a className="text-cyan-400 underline" href="https://pubmed.ncbi.nlm.nih.gov/16423702/" target="_blank" rel="noreferrer">estudo sobre microssacadas e desvanecimento visual</a>.
         </p>
       </div>
     )
@@ -61,7 +67,7 @@ const ARTICLES: Article[] = [
   {
     id: 'efeito-stroop',
     title: 'O Efeito Stroop e a Guerra Entre a Leitura Automática e o Controle Inibitório',
-    snippet: 'Por que é tão difícil nomear a cor da tinta quando a palavra escrita diz outra cor? A neurociência do córtex pré-frontal.',
+    snippet: 'Por que é mais difícil nomear a tinta quando a palavra apresenta uma cor diferente?',
     readTime: '3 min de leitura',
     content: (
       <div className="space-y-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
@@ -69,10 +75,13 @@ const ARTICLES: Article[] = [
           Publicado em 1935 pelo psicólogo John Ridley Stroop, o teste demonstra a interferência entre processos cognitivos automáticos e deliberados.
         </p>
         <p>
-          Para uma pessoa alfabetizada, ler é um processo altamente automatizado e involuntário: ao ver as letras "A-Z-U-L", o cérebro decodifica o significado semântico em frações de segundo. Já identificar conscientemente a cor física do pigmento (tinta) exige esforço voluntário do córtex pré-frontal dorsolateral e do córtex cingulado anterior.
+          Para leitores fluentes, reconhecer palavras é uma tarefa muito praticada. Quando o significado da palavra entra em conflito com a cor da tinta, essa informação concorrente pode tornar a nomeação da cor mais lenta e sujeita a erros.
         </p>
         <p>
-          A diferença de tempo entre a condição congruente (a palavra "AZUL" escrita em azul) e a condição incongruente ("AZUL" em vermelho) mede o custo temporal da inibição cognitiva.
+          Em experimentos controlados, a diferença entre condições congruentes e incongruentes é usada para estudar interferência. O minijogo do MindFlip não é um instrumento neuropsicológico validado e sua pontuação não deve ser interpretada clinicamente.
+        </p>
+        <p className="text-[11px] text-slate-400">
+          Fonte: <a className="text-cyan-400 underline" href="https://doi.org/10.1037/h0054651" target="_blank" rel="noreferrer">artigo original de Stroop (1935)</a>.
         </p>
       </div>
     )
@@ -82,11 +91,11 @@ const ARTICLES: Article[] = [
 const FAQS = [
   {
     q: 'As ilusões ópticas indicam algum problema de visão?',
-    a: 'Não! Pelo contrário: as ilusões ópticas funcionam exatamente porque seu sistema visual e cérebro são saudáveis e aplicam atalhos evolutivos eficientes para interpretar luz, sombras e profundidade.'
+    a: 'Uma ilusão isolada não confirma nem descarta um problema de visão. A experiência varia entre pessoas e condições de visualização. Mudanças visuais persistentes ou preocupantes devem ser avaliadas por um profissional de saúde.'
   },
   {
     q: 'Por que algumas pessoas conseguem inverter a rotação mais rápido que outras?',
-    a: 'O tempo de inversão varia de acordo com a flexibilidade cognitiva, a taxa natural de microssacadas oculares, a atenção voluntária e a prática. Com o tempo, é possível treinar a alternância consciente.'
+    a: 'O tempo pode variar conforme o estímulo, a atenção, a experiência e as condições de visualização. O cronômetro do MindFlip é apenas uma mecânica lúdica e não mede flexibilidade cognitiva.'
   },
   {
     q: 'O MindFlip é um teste psicológico ou médico?',
@@ -94,7 +103,7 @@ const FAQS = [
   },
   {
     q: 'Como o MindFlip protege meus dados e privacidade?',
-    a: '100% do seu progresso, recordes e conquistas são salvos estritamente no armazenamento local do seu navegador (localStorage). Não realizamos rastreamento invasivo nem venda de dados pessoais.'
+    a: 'Progresso, recordes, conquistas e preferências ficam no localStorage deste navegador. Eventos técnicos permanecem temporariamente na memória da página. Ao compartilhar um duelo, os dados do convite seguem para o serviço escolhido por você.'
   }
 ];
 
@@ -114,7 +123,7 @@ export const ArticlesView: React.FC = () => {
           A Ciência por Trás do MindFlip
         </h1>
         <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto mt-1">
-          Artigos aprofundados sobre como seu córtex visual, retina e cognição constroem a realidade a cada milissegundo.
+          Explicações introdutórias, com fontes, sobre percepção visual e interferência cognitiva.
         </p>
       </div>
 

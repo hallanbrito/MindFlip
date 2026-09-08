@@ -1,4 +1,4 @@
-import { UserProgress, UserPreferences, ChallengeAttempt, Achievement } from '../types';
+import type { UserProgress, UserPreferences, ChallengeAttempt, Achievement } from '../types.ts';
 
 const STORAGE_KEY = 'mindflip_user_progress_v1';
 const PREFS_KEY = 'mindflip_user_preferences_v1';
@@ -87,13 +87,102 @@ export const INITIAL_PREFERENCES: UserPreferences = {
   vibrationEnabled: true
 };
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function finiteNumber(value: unknown, fallback: number, minimum = 0): number {
+  return typeof value === 'number' && Number.isFinite(value) && value >= minimum
+    ? value
+    : fallback;
+}
+
+function stringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+}
+
+function normalizeHistory(value: unknown): ChallengeAttempt[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .filter(isRecord)
+    .flatMap(item => {
+      if (
+        typeof item.illusionId !== 'string' ||
+        typeof item.completed !== 'boolean' ||
+        typeof item.timestamp !== 'number' ||
+        !Number.isFinite(item.timestamp) ||
+        typeof item.scoreEarned !== 'number' ||
+        !Number.isFinite(item.scoreEarned)
+      ) {
+        return [];
+      }
+
+      const attempt: ChallengeAttempt = {
+        illusionId: item.illusionId,
+        timestamp: item.timestamp,
+        completed: item.completed,
+        scoreEarned: item.scoreEarned
+      };
+
+      if (typeof item.timeElapsed === 'number' && Number.isFinite(item.timeElapsed) && item.timeElapsed >= 0) {
+        attempt.timeElapsed = item.timeElapsed;
+      }
+      if (typeof item.initialPerception === 'string') attempt.initialPerception = item.initialPerception;
+      if (typeof item.flipped === 'boolean') attempt.flipped = item.flipped;
+
+      return [attempt];
+    })
+    .slice(0, 50);
+}
+
+function normalizeBestTimes(value: unknown): Record<string, number> {
+  if (!isRecord(value)) return {};
+
+  return Object.fromEntries(
+    Object.entries(value).filter(
+      (entry): entry is [string, number] =>
+        typeof entry[1] === 'number' && Number.isFinite(entry[1]) && entry[1] > 0
+    )
+  );
+}
+
+export function normalizeUserProgress(value: unknown): UserProgress {
+  if (!isRecord(value)) return { ...INITIAL_PROGRESS, dominatedIllusions: [], bestTimes: {}, unlockedAchievements: [], history: [] };
+
+  return {
+    mentalScore: finiteNumber(value.mentalScore, INITIAL_PROGRESS.mentalScore),
+    streak: finiteNumber(value.streak, INITIAL_PROGRESS.streak),
+    lastPlayedDate: typeof value.lastPlayedDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value.lastPlayedDate)
+      ? value.lastPlayedDate
+      : INITIAL_PROGRESS.lastPlayedDate,
+    totalAttempts: finiteNumber(value.totalAttempts, INITIAL_PROGRESS.totalAttempts),
+    dominatedIllusions: stringArray(value.dominatedIllusions),
+    bestTimes: normalizeBestTimes(value.bestTimes),
+    unlockedAchievements: stringArray(value.unlockedAchievements),
+    history: normalizeHistory(value.history)
+  };
+}
+
+export function normalizeUserPreferences(
+  value: unknown,
+  systemPrefersReducedMotion = false
+): UserPreferences {
+  const source = isRecord(value) ? value : {};
+  return {
+    soundEnabled: typeof source.soundEnabled === 'boolean' ? source.soundEnabled : INITIAL_PREFERENCES.soundEnabled,
+    reducedMotion: typeof source.reducedMotion === 'boolean' ? source.reducedMotion : systemPrefersReducedMotion,
+    highContrast: typeof source.highContrast === 'boolean' ? source.highContrast : INITIAL_PREFERENCES.highContrast,
+    vibrationEnabled: typeof source.vibrationEnabled === 'boolean' ? source.vibrationEnabled : INITIAL_PREFERENCES.vibrationEnabled
+  };
+}
+
 export function loadUserProgress(): UserProgress {
   if (typeof window === 'undefined') return INITIAL_PROGRESS;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return INITIAL_PROGRESS;
-    const data = JSON.parse(raw);
-    return { ...INITIAL_PROGRESS, ...data };
+    return normalizeUserProgress(JSON.parse(raw));
   } catch (err) {
     console.error('Error loading progress from localStorage', err);
     return INITIAL_PROGRESS;
@@ -113,8 +202,9 @@ export function loadUserPreferences(): UserPreferences {
   if (typeof window === 'undefined') return INITIAL_PREFERENCES;
   try {
     const raw = localStorage.getItem(PREFS_KEY);
-    if (!raw) return INITIAL_PREFERENCES;
-    return { ...INITIAL_PREFERENCES, ...JSON.parse(raw) };
+    const systemPrefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    if (!raw) return normalizeUserPreferences(undefined, systemPrefersReducedMotion);
+    return normalizeUserPreferences(JSON.parse(raw), systemPrefersReducedMotion);
   } catch {
     return INITIAL_PREFERENCES;
   }

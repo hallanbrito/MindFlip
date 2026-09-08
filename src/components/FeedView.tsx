@@ -76,13 +76,13 @@ export const FeedView: React.FC<Props> = ({
   const goToNext = () => {
     playClickTone();
     setCurrentIndex(i => (i + 1) % filteredIllusions.length);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
   };
 
   const goToPrev = () => {
     playClickTone();
     setCurrentIndex(i => (i - 1 + filteredIllusions.length) % filteredIllusions.length);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
   };
 
   const currentIllusion = filteredIllusions[currentIndex] || ILLUSIONS_DATA[0];
@@ -113,7 +113,7 @@ export const FeedView: React.FC<Props> = ({
                 setHasStartedPlaying(true);
                 // Smooth scroll to challenge card
                 const el = document.getElementById('active-challenge');
-                el?.scrollIntoView({ behavior: 'smooth' });
+                el?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
               }}
               className="py-4 px-8 rounded-2xl bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-500 text-slate-950 font-black text-base sm:text-lg shadow-xl shadow-cyan-500/25 hover:brightness-110 active:scale-95 transition-all flex items-center gap-2.5 uppercase tracking-wide"
             >

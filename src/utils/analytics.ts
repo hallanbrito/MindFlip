@@ -36,15 +36,7 @@ class AnalyticsService {
       this.events = this.events.slice(-100);
     }
 
-    // In development or when requested, log cleanly
-    if (process.env.NODE_ENV === 'development') {
-      console.debug(`[Analytics] 📊 ${eventName}`, data);
-    }
-
-    // Future integration placeholder: Google Analytics, Plausible, PostHog
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', eventName, data);
-    }
+    // Events stay only in this in-memory buffer.
   }
 
   public getRecentEvents(): AnalyticsEvent[] {

@@ -38,6 +38,14 @@ export const MotionAftereffect: React.FC<Props> = ({
   }, [isRunning, countdown]);
 
   useEffect(() => {
+    if (reducedMotion) {
+      setIsRunning(false);
+      setPhase('animating');
+      setCountdown(15);
+    }
+  }, [reducedMotion]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -130,6 +138,7 @@ export const MotionAftereffect: React.FC<Props> = ({
   }, [phase, isRunning, spiralSpeed, reducedMotion]);
 
   const startTest = () => {
+    if (reducedMotion) return;
     setCountdown(15);
     setPhase('animating');
     setIsRunning(true);
@@ -167,16 +176,24 @@ export const MotionAftereffect: React.FC<Props> = ({
 
         {!isRunning && phase === 'animating' && (
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-4">
-            <button
-              type="button"
-              onClick={startTest}
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold text-sm shadow-lg hover:brightness-110 active:scale-95 transition-all"
-            >
-              ▶ Iniciar Fixação (15s)
-            </button>
-            <span className="text-[11px] text-slate-400 mt-2 text-center">
-              Você observará a imagem estática se expandir sozinha.
-            </span>
+            {reducedMotion ? (
+              <span className="text-xs text-amber-300 text-center rounded-lg border border-amber-500/40 bg-amber-950/70 p-3">
+                Experiência de movimento pausada enquanto o modo reduzido estiver ativo.
+              </span>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={startTest}
+                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold text-sm shadow-lg hover:brightness-110 active:scale-95 transition-all"
+                >
+                  ▶ Iniciar Fixação (15s)
+                </button>
+                <span className="text-[11px] text-slate-400 mt-2 text-center">
+                  Você poderá observar um movimento aparente na imagem estática.
+                </span>
+              </>
+            )}
           </div>
         )}
       </div>
