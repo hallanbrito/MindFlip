@@ -1,0 +1,6 @@
+{
+  "name": "MindFlip",
+  "description": "Desafios visuais, ilusões de percepção e experiências interativas que testam o limite do seu cérebro.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
