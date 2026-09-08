@@ -6,7 +6,7 @@ O MindFlip combina entretenimento rápido, curiosidade científica, acessibilida
 
 ## Estado do projeto
 
-O repositório contém uma prova de conceito em React, TypeScript e Vite. A evolução do produto é conduzida em **Fatias W** pelo Método C.H. (ChatGPT–Hallan / Colaboração Híbrida).
+O repositório contém uma prova de conceito em React, TypeScript e Vite. A evolução do produto é conduzida em **Fatias W** pelo Método C.H. (ChatGPT–Hallan / Colaboração Híbrida), usando o ciclo operacional **CHAVE**: Contextualizar, Harmonizar, Agir, Verificar e Evoluir.
 
 A documentação normativa começa em:
 

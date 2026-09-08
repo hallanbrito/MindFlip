@@ -25,16 +25,42 @@ Instruções mais específicas em arquivos `AGENTS.md` de subdiretórios, se vie
 
 Nenhuma implementação começa sem uma Fatia W contendo:
 
-- objetivo;
+- objetivo e valor esperado;
+- baseline;
 - escopo incluído;
 - exclusões;
+- decisões aprovadas e proibidas;
+- arquivos, ferramentas e acessos autorizados;
 - critérios de aceitação;
 - verificações;
-- condição de parada.
+- nível de autonomia;
+- responsável humano;
+- condição de parada;
+- reversão ou recuperação;
+- formato do Pacote de Evidências.
 
 Se algum item estiver ausente e isso puder mudar materialmente a solução, pare e solicite decisão.
 
-## 4. Controle de escopo
+## 4. Ciclo CHAVE
+
+Toda Fatia W segue os gates do ciclo operacional definido na Fundação:
+
+1. **Contextualizar:** confirmar fontes de verdade, baseline, histórico, riscos e capacidade.
+2. **Harmonizar:** fechar o Contrato de Execução com intenção, escopo, critérios e autonomia alinhados.
+3. **Agir:** executar somente no ambiente isolado e dentro da autorização concedida.
+4. **Verificar:** revisar diff, testes, segurança, escopo, documentação, limitações e desvios.
+5. **Evoluir:** submeter ao aceite humano, integrar apenas quando autorizado, limpar recursos e atualizar a Memória Versionada.
+
+Uma etapa pode retornar à anterior para correção, mas não pode ser omitida.
+
+### Níveis de autonomia
+
+- **CH-0:** consultar, sem alterações externas.
+- **CH-1:** propor, sem executar mudanças.
+- **CH-2:** executar isolado, testar, commitar e abrir Draft PR, sem integrar.
+- **CH-3:** integrar somente com gates satisfeitos, autorização e trilha auditável.
+
+## 5. Controle de escopo
 
 - Implemente apenas o necessário para a Fatia W autorizada.
 - Não adicione funcionalidades “aproveitando a oportunidade”.
@@ -43,7 +69,7 @@ Se algum item estiver ausente e isso puder mudar materialmente a solução, pare
 - Não altere código executável em fatia declarada apenas documental.
 - Preserve mudanças preexistentes que não pertencem à tarefa.
 
-## 5. Fluxo Git
+## 6. Fluxo Git
 
 - Nunca trabalhe diretamente em `main`.
 - Crie branch descritiva a partir do commit-base confirmado.
@@ -52,7 +78,7 @@ Se algum item estiver ausente e isso puder mudar materialmente a solução, pare
 - Não reescreva histórico nem use ações destrutivas sem autorização explícita.
 - Ao concluir, informe branch, commits, arquivos alterados e verificações.
 
-## 6. Qualidade e evidência
+## 7. Qualidade e evidência
 
 Para mudanças de código, execute no mínimo, quando disponíveis:
 
@@ -76,7 +102,7 @@ Nunca declare teste, build, revisão visual ou comportamento como aprovado sem t
 - **inferido:** conclusão baseada em leitura;
 - **não verificado:** faltou ambiente, acesso ou ferramenta.
 
-## 7. Regras de produto
+## 8. Regras de produto
 
 ### Conteúdo científico
 
@@ -105,7 +131,7 @@ Nunca declare teste, build, revisão visual ou comportamento como aprovado sem t
 - Não use dark patterns, botões falsos, bloqueio de saída ou interrupção durante desafios.
 - Integração publicitária exige revisão de privacidade, desempenho e acessibilidade.
 
-## 8. Arquitetura atual a preservar
+## 9. Arquitetura atual a preservar
 
 O MindFlip é uma aplicação React + TypeScript + Vite. No estado inicial:
 
@@ -120,7 +146,7 @@ O MindFlip é uma aplicação React + TypeScript + Vite. No estado inicial:
 
 Essa descrição documenta o estado observado; não autoriza congelamento nem refatoração.
 
-## 9. Delegação
+## 10. Delegação
 
 Toda delegação para outro agente deve declarar:
 
@@ -133,7 +159,7 @@ Toda delegação para outro agente deve declarar:
 
 O agente coordenador deve revisar o resultado delegado antes de incorporá-lo. Agentes executores não ampliam a própria autorização.
 
-## 10. Relatório final obrigatório
+## 11. Relatório final obrigatório
 
 A entrega deve incluir:
 
@@ -146,3 +172,5 @@ A entrega deve incluir:
 7. itens fora do escopo;
 8. recomendação da próxima Fatia W, sem executá-la;
 9. estado: **pronto para revisão**, nunca “aprovado” em nome do Product Owner.
+
+Esse relatório constitui o Pacote de Evidências. A Draft PR é o Pedido de Integração; somente a decisão explícita do Product Owner constitui o Registro de Aceitação.
