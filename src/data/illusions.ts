@@ -1,4 +1,4 @@
-import { Illusion } from '../types';
+import type { Illusion } from '../types.ts';
 
 export const ILLUSIONS_DATA: Illusion[] = [
   {
@@ -20,8 +20,8 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Imagine que a perna em rotação está passando por trás em vez de pela frente.',
       'Incline a cabeça levemente para alterar o ângulo perceptual.'
     ],
-    explanation: 'A animação não tem profundidade 2D: é uma projeção ortográfica plana sem pistas de oclusão ou sombra. Seu cérebro precisa adivinhar qual lado está na frente.',
-    scienceExplanation: 'Este é um estímulo biestável: como a silhueta oferece poucas pistas de profundidade, ela admite mais de uma interpretação. Modelos científicos relacionam as alternâncias a processos sensoriais e cognitivos concorrentes.',
+    explanation: 'A silhueta é uma projeção 2D com pistas insuficientes para definir qual parte está à frente. Por isso, a mesma animação admite duas direções aparentes de rotação.',
+    scienceExplanation: 'Este é um estímulo biestável: a imagem física permanece igual enquanto a percepção pode alternar. Estudos com a silhueta giratória encontraram influência da intenção, do ponto de fixação e da velocidade sobre a frequência das alternâncias, sem transformar o fenômeno em medida de capacidade mental.',
     curiosity: 'A direção percebida pode mudar mesmo quando a animação permanece exatamente igual.',
     shareText: 'Consegui inverter a rotação ambígua da silhueta! Você consegue virar a percepção do seu cérebro no MindFlip?',
     motionWarning: true,
@@ -47,11 +47,11 @@ export const ILLUSIONS_DATA: Illusion[] = [
     tips: [
       'Concentre o olhar em um dos vértices centrais.',
       'Pense mentalmente: "estou olhando este cubo por baixo" e depois "por cima".',
-      'Pisque rapidamente para quebrar a dominância neural.'
+      'Desvie brevemente o olhar e retorne a outro vértice do desenho.'
     ],
-    explanation: 'Como todas as arestas têm a mesma espessura e não há sombras, o desenho 2D contém duas representações 3D matematicamente idênticas.',
-    scienceExplanation: 'Descrito por Louis Albert Necker em 1832, o desenho admite duas organizações espaciais. Competição, adaptação e atenção aparecem em modelos de percepção multiestável, sem que o site consiga medir diretamente esses mecanismos.',
-    curiosity: 'O cérebro humano raramente aceita o cubo como um desenho plano de 12 linhas: ele insiste em transformá-lo num sólido tridimensional.',
+    explanation: 'Como o desenho não informa de modo decisivo quais arestas estão à frente, ele permite duas organizações tridimensionais coerentes.',
+    scienceExplanation: 'Necker descreveu a reversão em 1832. Hoje o cubo é usado no estudo da percepção multiestável, para a qual existem modelos envolvendo competição, adaptação e influências da atenção. O MindFlip registra apenas a alternância relatada pelo usuário.',
+    curiosity: 'Mesmo com o desenho imóvel, a face que parece estar na frente pode mudar ao longo da observação.',
     shareText: 'Acabei de alternar o Cubo de Necker no MindFlip! Consegue inverter sua percepção mais rápido que eu?',
     labControls: [
       { id: 'perspective', label: 'Distância Focal', min: 300, max: 1200, step: 50, defaultValue: 600, unit: 'px' },
@@ -64,7 +64,7 @@ export const ILLUSIONS_DATA: Illusion[] = [
     slug: 'vaso-de-rubin',
     title: 'Vaso de Rubin',
     subtitle: 'Figura e Fundo em Guerra',
-    shortDescription: 'Dois rostos frente a frente ou um vaso sofisticado no centro? Seu cérebro não consegue ver ambos ao mesmo tempo.',
+    shortDescription: 'Dois rostos frente a frente ou um vaso no centro? A mesma borda permite duas organizações de figura e fundo.',
     category: 'rostos',
     difficulty: 'Fácil',
     instructions: 'Observe a imagem. Identifique o que você viu primeiro. Depois, tente alternar a percepção entre os dois perfis e o vaso central.',
@@ -77,9 +77,9 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Para ver os rostos, foque nos contornos pretos laterais como se fossem silhuetas humanas.',
       'Perceba como a mesma linha de contorno pertence a apenas uma das figuras por vez.'
     ],
-    explanation: 'A mesma linha de contorno serve como limite para a figura e para o fundo. O cérebro só pode atribuir a propriedade de "borda" a um dos lados por vez.',
-    scienceExplanation: 'Popularizada por Edgar Rubin, a imagem demonstra a alternância figura-fundo: ora a região central é percebida como figura, ora os perfis laterais assumem esse papel.',
-    curiosity: 'É praticamente impossível para a consciência humana processar simultaneamente as duas interpretações: elas operam em alternância competitiva.',
+    explanation: 'A mesma borda delimita tanto a região central quanto os perfis laterais. Conforme a borda é atribuída a um lado ou ao outro, muda o que se destaca como figura.',
+    scienceExplanation: 'O estímulo faces-vaso é usado para estudar segregação figura-fundo. A entrada visual permanece constante, mas a região percebida como figura pode alternar entre o vaso central e os perfis.',
+    curiosity: 'As duas formas continuam desenhadas ao mesmo tempo, embora normalmente uma delas se destaque como figura em cada momento.',
     shareText: 'Você vê rostos ou vaso? Testei minha percepção no MindFlip!',
     labControls: [
       { id: 'contrast', label: 'Contraste Figura-Fundo', min: 0.2, max: 1, step: 0.1, defaultValue: 1 },
@@ -102,10 +102,10 @@ export const ILLUSIONS_DATA: Illusion[] = [
     tips: [
       'Cubra com o dedo tudo ao redor de A e B, deixando apenas os centros visíveis.',
       'Use o controle interativo de "Ponte de Conexão" para ligar os dois quadrados.',
-      'Seu cérebro compensa a sombra do cilindro e clareia o quadrado B.'
+      'O contexto de sombra contribui para que o quadrado B pareça mais claro.'
     ],
-    explanation: 'O cérebro calcula a cor de um objeto descontando a sombra aparente. Como B está sob uma sombra projetada, o sistema visual assume que ele precisa ser um quadrado claro para refletir aquela quantidade de luz.',
-    scienceExplanation: 'Criada pelo professor Edward Adelson no MIT em 1995, ilustra a constância de luminosidade. O sistema visual humano não mede fótons absolutos (como um fotômetro); ele mede relações de contraste local e deduz a iluminação tridimensional do ambiente.',
+    explanation: 'A aparência de cada quadrado depende do contraste ao redor e da interpretação da sombra projetada. Assim, regiões com a mesma luminância na imagem podem parecer diferentes.',
+    scienceExplanation: 'A demonstração publicada por Edward Adelson em 1995 evidencia que a percepção de luminosidade considera relações locais e a organização aparente da cena. Ela não funciona como uma leitura direta e isolada do valor de cada pixel.',
     curiosity: 'Mesmo depois de saber a verdade científica e medir com conta-gotas de pixel, quando a imagem completa é mostrada novamente, seu cérebro volta a vê-los diferentes.',
     shareText: 'Juro que o quadrado A e o B parecem diferentes, mas têm a MESMA cor! Teste o Checker Shadow no MindFlip.',
     labControls: [
@@ -132,8 +132,8 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Perceba como o contraste de tamanho induz um erro de escala.'
     ],
     explanation: 'Um objeto idêntico parece menor quando cercado por objetos grandes e maior quando cercado por objetos pequenos.',
-    scienceExplanation: 'O tamanho percebido do círculo central muda conforme o contexto ao redor. A explicação envolve processamento contextual de tamanho, e não uma medição direta feita por esta demonstração.',
-    curiosity: 'Ilusões de tamanho relativo funcionam até no mundo real: colocar comida em pratos menores faz as pessoas sentirem que comeram mais.',
+    scienceExplanation: 'Experimentos mostram que o tamanho aparente do alvo depende de mais de um aspecto da configuração, especialmente do tamanho relativo e da distância dos círculos ao redor. Por isso, não há uma única regra de contraste que explique todas as variantes.',
+    curiosity: 'Alterar a distância entre o círculo central e os círculos externos pode aumentar, reduzir ou até mudar o sentido do efeito.',
     shareText: 'Caí na ilusão dos Círculos de Ebbinghaus no MindFlip! O contexto engana nossos olhos completamente.',
     labControls: [
       { id: 'surroundSize', label: 'Tamanho dos Círculos Externos', min: 0.2, max: 2, step: 0.1, defaultValue: 1 },
@@ -159,8 +159,8 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Observe como o espaço delimitado pelas asas influencia a percepção do todo.'
     ],
     explanation: 'As pontas voltadas para fora fazem o cérebro estender a extensão visual da linha, enquanto as pontas para dentro criam um estreitamento perceptivo.',
-    scienceExplanation: 'Publicada por Franz Carl Müller-Lyer em 1889. Uma teoria clássica (Gregory, 1968) sugere que o cérebro interpreta as flechas abertas como cantos internos de uma sala (mais distantes) e as fechadas como cantos externos de um edifício (mais próximos), aplicando compensação de perspectiva.',
-    curiosity: 'Povos que vivem em culturas sem arquitetura retilínea ou edifícios com quinas (como certas tribos em florestas) são muito menos suscetíveis a esta ilusão!',
+    scienceExplanation: 'A ilusão é conhecida desde o século XIX, mas seu mecanismo permanece debatido. Um estudo de Howe e Purves mostrou que o efeito pode ser previsto pelas probabilidades das fontes físicas que costumam produzir configurações semelhantes nas imagens naturais.',
+    curiosity: 'A intensidade do efeito varia com o ângulo e o comprimento das terminações, além da forma usada para comparar as linhas.',
     shareText: 'A Ilusão de Müller-Lyer é clássica, mas ainda engana qualquer um! Teste no MindFlip.',
     labControls: [
       { id: 'arrowAngle', label: 'Ângulo das Flechas', min: 15, max: 75, step: 5, defaultValue: 45, unit: '°' },
@@ -185,8 +185,8 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Afaste-se da tela cerca de 1 metro para reduzir a distorção local.',
       'Ative as linhas vermelhas de referência para conferir.'
     ],
-    explanation: 'O contraste entre os blocos pretos e brancos desfasados engana os detectores de borda da retina, criando vetores de orientação falsos.',
-    scienceExplanation: 'Descoberta numa parede de azulejos de um café em Bristol, Inglaterra, na década de 1970 por Richard Gregory. Ocorre devido a interações de luminância no córtex visual primário (células simples sensíveis a orientação), gerando pequenas assimetrias de brilho nas junções que o cérebro interpreta como inclinação.',
+    explanation: 'O deslocamento entre blocos claros e escuros, separado por faixas de luminância intermediária, produz pequenas mudanças locais que fazem as divisórias paralelas parecerem inclinadas.',
+    scienceExplanation: 'Gregory e Heard estudaram a configuração em 1979 e propuseram o mecanismo de “travamento de bordas”: bordas de luminância vizinhas, separadas por uma faixa estreita, podem ser registradas com deslocamentos aparentes. É um modelo explicativo, não uma medição neural feita por esta página.',
     curiosity: 'A organização alternada dos blocos é suficiente para mudar a orientação aparente das linhas paralelas.',
     shareText: 'Linhas 100% retas que parecem completamente tortas na Parede de Café do MindFlip! Tente você mesmo.',
     labControls: [
@@ -213,8 +213,8 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Relaxe as pálpebras sem piscar durante a contagem.',
       'A visão periférica se adapta a estímulos estáticos e os apaga.'
     ],
-    explanation: 'Ao fixar o centro, os fotorreceptores periféricos se esgotam (efeito Troxler) e o cérebro substitui o espaço vazio pela cor complementar oposta: verde.',
-    scienceExplanation: 'O efeito Troxler (1804) demonstra que estímulos invariantes na visão periférica são filtrados pelo sistema nervoso central como ruído de fundo. Quando a bolinha lilás apaga temporariamente, o pós-efeito negativo dos cones retinianos sensibiliza a percepção para o comprimento de onda verde complementar.',
+    explanation: 'Durante a fixação, os pontos periféricos podem perder visibilidade por adaptação. A sequência de lacunas em movimento e a pós-imagem de cor contribuem para a aparência de um ponto esverdeado circulando.',
+    scienceExplanation: 'Estudos relacionam o desvanecimento durante fixação à adaptação e mostram que microssacadas ajudam a restaurar a visibilidade. As pós-imagens de cor começam com sinais gerados na retina e podem ser modificadas por processamento cortical; a demonstração combina esses fenômenos.',
     curiosity: 'Mesmo durante a fixação, os olhos realizam pequenos movimentos involuntários que influenciam a visibilidade de estímulos estáticos.',
     shareText: 'Fiz pontos desaparecerem e vi um feixe verde correr com a mente no Lilac Chaser do MindFlip!',
     motionWarning: true,
@@ -235,15 +235,15 @@ export const ILLUSIONS_DATA: Illusion[] = [
     interactionType: 'fixation_timer',
     initialQuestion: 'A imagem estática pareceu se mover ou respirar?',
     choices: ['Sim! Pareceu expandir/ondular sozinha!', 'Não senti nenhum movimento posterior.'],
-    correctOrSurpriseAnswer: 'A imagem é 100% estática, mas os neurônios de movimento do seu cérebro estão em compensação reversa!',
+    correctOrSurpriseAnswer: 'A imagem de teste está estática, mas a adaptação ao movimento anterior pode produzir movimento aparente na direção oposta!',
     tips: [
       'Fixe os olhos no centro exato da espiral.',
       'Deixe a contagem regressiva de 15 segundos completar.',
       'Não desvie o olhar até a imagem estática aparecer.'
     ],
     explanation: 'A exposição prolongada a uma direção de movimento adapta o sistema visual. Ao olhar depois para uma imagem parada, o equilíbrio entre sinais de direções opostas pode produzir movimento aparente.',
-    scienceExplanation: 'Documentado por Aristóteles e formalizado por Robert Addams em 1834 na Cachoeira de Foyers. A área cortical MT/V5 possui populações de neurônios sintonizados com direções de movimento específicas. A adaptação neural reduz a taxa de disparo espontânea das células estimuladas, gerando um desequilíbrio na leitura da rede neural.',
-    curiosity: 'É o mesmo efeito neurológico que faz você sentir que o chão continua se movendo quando você desce de uma esteira ergométrica.',
+    scienceExplanation: 'O pós-efeito de movimento é uma ilusão robusta após exposição a um padrão móvel. Revisões indicam que a adaptação relacionada ao efeito ocorre em múltiplos níveis do processamento visual, e não em uma única área ou população de neurônios.',
+    curiosity: 'O efeito pode mudar conforme o tipo, a velocidade e a duração do movimento usado na adaptação.',
     shareText: 'A imagem estática começou a se mover e respirar na minha frente no MindFlip! Que loucura neurológica.',
     motionWarning: true,
     labControls: [
@@ -268,9 +268,9 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Olhe estritamente para o ponto central sem espiar as bordas.',
       'Se você mover os olhos mesmo que um milímetro, as cores voltam instantaneamente.'
     ],
-    explanation: 'Bordas suaves com baixo gradiente de luminância são as primeiras a serem filtradas pelo cérebro quando não há movimento dos olhos.',
-    scienceExplanation: 'As células ganglionares da retina respondem preferencialmente a mudanças no tempo e no espaço (derivadas temporais). Como os discos possuem bordas difusas e o olho é instruído a fixar, não há variação de sinal temporal na periferia, levando à cessação do impulso elétrico.',
-    curiosity: 'Seus olhos usam esse mesmo mecanismo para apagar da sua visão os vasos sanguíneos que ficam na frente da sua própria retina!',
+    explanation: 'Alvos periféricos pouco contrastantes e quase imóveis na retina podem perder visibilidade durante uma fixação prolongada.',
+    scienceExplanation: 'O desvanecimento envolve adaptação durante a fixação. Os olhos nunca ficam perfeitamente parados: microssacadas e deriva alteram a imagem retinal e podem recuperar a visibilidade. O resultado depende do contraste, da excentricidade e das condições de observação.',
+    curiosity: 'Pequenos movimentos oculares involuntários podem fazer as manchas reaparecerem sem que você perceba ter movido os olhos.',
     shareText: 'Fiz objetos reais sumirem da minha visão só parando os olhos no MindFlip. Muito impressionante.',
     labControls: [
       { id: 'blurAmount', label: 'Difusão das Bordas', min: 5, max: 35, step: 5, defaultValue: 20, unit: 'px' },
@@ -282,22 +282,22 @@ export const ILLUSIONS_DATA: Illusion[] = [
     slug: 'ponto-cego',
     title: 'O Ponto Cego da Retina',
     subtitle: 'O Buraco Invisível nos Seus Olhos',
-    shortDescription: 'Você tem um buraco real na sua visão onde o nervo óptico sai da retina. Descubra onde ele fica agora.',
+    shortDescription: 'Existe uma região sem fotorreceptores onde o nervo óptico deixa a retina. Descubra como ela afeta esta demonstração.',
     category: 'atencao',
     difficulty: 'Fácil',
     instructions: 'Feche ou cubra o olho esquerdo. Fixe o olho direito na cruz da esquerda. Aproxime ou afaste seu rosto da tela devagar. A bolinha da direita sumirá por completo!',
     interactionType: 'interactive_reveal',
     initialQuestion: 'A bolinha desapareceu a uma certa distância?',
     choices: ['Sim! Sumiu do nada!', 'Ainda não acertei a distância.'],
-    correctOrSurpriseAnswer: 'No ponto cego, seu cérebro preenche o buraco com a cor de fundo cinza ao redor!',
+    correctOrSurpriseAnswer: 'Quando o alvo coincide com o ponto cego, a região pode ser percebida de acordo com o fundo ao redor.',
     tips: [
       'Certifique-se de cobrir totalmente o olho esquerdo.',
       'Olhe apenas para a cruz (+), use a visão lateral para notar a bolinha (•).',
       'Aproxime a cabeça lentamente de cerca de 40 cm para 20 cm da tela.'
     ],
-    explanation: 'No local onde o nervo óptico se conecta à retina, não existem cones nem bastonetes. O cérebro inventa o fundo para preencher a lacuna.',
-    scienceExplanation: 'Descoberto pelo físico francês Edme Mariotte em 1668. O disco óptico (papila óptica) tem cerca de 1,5 mm de diâmetro e nenhuma célula fotorreceptora. O fenômeno de preenchimento ("perceptual filling-in") no córtex visual substitui ativamente a região ausente com a textura circundante.',
-    curiosity: 'Mariotte usava essa ilusão na corte do rei Luís XIV da França para fazer a cabeça das pessoas "desaparecerem" visualmente por diversão!',
+    explanation: 'O disco óptico não possui cones nem bastonetes. Quando o alvo incide nessa região, a percepção pode completar a área usando propriedades visuais do entorno.',
+    scienceExplanation: 'O preenchimento perceptivo descreve situações em que cor, brilho, textura ou movimento são percebidos numa região sem informação retinal correspondente. Há evidências de participação de áreas visuais iniciais, mas os mecanismos exatos ainda são estudados.',
+    curiosity: 'Normalmente não percebemos uma lacuna porque os pontos cegos dos dois olhos ficam em posições diferentes e a percepção integra o contexto disponível.',
     shareText: 'Acabei de encontrar o buraco cego do meu próprio olho no MindFlip! Muito legal.',
     labControls: [
       { id: 'targetDistance', label: 'Distância entre Ícones', min: 100, max: 350, step: 10, defaultValue: 220, unit: 'px' },
@@ -320,10 +320,10 @@ export const ILLUSIONS_DATA: Illusion[] = [
     tips: [
       'Fixe os olhos exatamente no ponto branco central.',
       'Tente piscar suavemente sobre a tela branca quando o tempo acabar.',
-      'A fadiga dos cones vermelho-azul gera a resposta das cores opostas.'
+      'A adaptação aos estímulos coloridos contribui para a pós-imagem complementar.'
     ],
-    explanation: 'Os receptores de cores na retina se cansam de processar as cores falsas. Quando você olha para uma tela branca (que reflete todas as cores), os receptores descansados respondem com força.',
-    scienceExplanation: 'Baseia-se na teoria do processo oponente de Ewald Hering. Os circuitos neurais visuais codificam cores em pares antagônicos: vermelho versus verde, azul versus amarelo, preto versus branco. A adaptação temporária de um canal desbalanceia o sinal para a cor oposta.',
+    explanation: 'Após a adaptação a um padrão colorido, olhar para uma área clara pode produzir por alguns instantes uma pós-imagem com cores aproximadamente complementares.',
+    scienceExplanation: 'Experimentos indicam que os sinais de pós-imagem de cor são gerados inicialmente na retina e podem ser modificados por processos corticais. A aparência final depende tanto da adaptação quanto do contexto apresentado depois.',
     curiosity: 'Pós-imagens também podem aparecer depois de observar por algum tempo outros contrastes fortes de cor.',
     shareText: 'Meu cérebro pintou uma bandeira no branco do nada no MindFlip! Impressionante.',
     labControls: [
@@ -349,7 +349,7 @@ export const ILLUSIONS_DATA: Illusion[] = [
     ],
     explanation: 'A leitura é um processo automático supertreinado pelo cérebro, enquanto a nomeação de cor exige atenção consciente (processamento controlado).',
     scienceExplanation: 'O efeito foi estudado por John Ridley Stroop em 1935. A demora adicional na condição incongruente é usada em pesquisa para estudar interferência, mas este minijogo não é um teste neuropsicológico validado.',
-    curiosity: 'Crianças que ainda não aprenderam a ler completam esse teste muito mais rápido do que adultos com diploma universitário!',
+    curiosity: 'A interferência é estudada comparando condições congruentes e incongruentes sob procedimentos controlados; uma pontuação isolada deste minijogo não permite essa inferência.',
     shareText: 'Tentei vencer o Desafio Stroop no MindFlip e meu cérebro travou completamente! Tente bater meu tempo.',
     labControls: [
       { id: 'roundCount', label: 'Quantidade de Rodadas', min: 3, max: 10, step: 1, defaultValue: 5 }
@@ -374,8 +374,8 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'O cérebro prefere assumir que há um objeto bloqueando a visão.'
     ],
     explanation: 'O cérebro deduz a existência de uma forma geométrica frontal que oclui três círculos pretos, inventando as linhas de contorno.',
-    scienceExplanation: 'Criada pelo psicólogo italiano Gaetano Kanizsa em 1955. Evidencia contornos ilusórios (ou modais). Neurônios da área visual V2 respondem a esses contornos virtuais como se fossem linhas físicas reais com contraste de luminância.',
-    curiosity: 'Animais caçadores e primatas também enxergam contornos ilusórios: isso ajudava nossos ancestrais a detectar predadores camuflados na selva.',
+    scienceExplanation: 'A configuração evidencia contornos ilusórios: percebemos uma borda sem contraste físico contínuo naquele local. Em um estudo com macacos, neurônios da área visual 18 responderam a esses contornos, oferecendo uma evidência neural do processamento do fenômeno.',
+    curiosity: 'A sensação de contorno enfraquece quando a orientação dos discos deixa de sugerir uma superfície que os encobre.',
     shareText: 'Meu cérebro inventou um triângulo luminoso onde não tem nada no MindFlip! Venha conferir.',
     labControls: [
       { id: 'pacmanRotation', label: 'Alinhamento dos Discos', min: 0, max: 180, step: 5, defaultValue: 0, unit: '°' },
@@ -394,14 +394,14 @@ export const ILLUSIONS_DATA: Illusion[] = [
     interactionType: 'interactive_reveal',
     initialQuestion: 'Os pontos cinzas somem quando você olha diretamente para eles?',
     choices: ['Sim! Quando olho direto, a mancha some!', 'Não notei as manchas cinzas.'],
-    correctOrSurpriseAnswer: 'Sua fóvea central tem campos receptivos minúsculos que não criam a inibição lateral que gera a mancha!',
+    correctOrSurpriseAnswer: 'As manchas dependem da configuração e costumam enfraquecer quando a interseção é observada diretamente.',
     tips: [
       'Mantenha o olhar no centro e repare nas manchas piscando na visão lateral.',
       'Tente fixar o olhar exatamente onde uma mancha cinza apareceu.',
       'Aproxime e afaste os olhos para mudar o espaçamento relativo.'
     ],
-    explanation: 'Nas interseções, há quatro faixas brancas vizinhas causando inibição lateral nos fotorreceptores. No centro da sua visão (fóvea), a resolução é alta e o efeito desaparece.',
-    scienceExplanation: 'Descoberta por Ludimar Hermann em 1870. O modelo clássico explica o fenômeno por campos receptivos concêntricos (centro-periferia) de células ganglionares na retina. A maior quantidade de luz ao redor nas encruzilhadas inibe a resposta do centro receptor.',
+    explanation: 'A grade pode produzir manchas aparentes nas interseções vistas perifericamente. O efeito muda com a geometria, a orientação, o contraste e a posição do olhar.',
+    scienceExplanation: 'A explicação clássica atribuía o efeito apenas a campos receptivos centro-periferia na retina. Experimentos posteriores mostraram que esse modelo isolado é insuficiente; Schiller e Carvey propuseram participação de mecanismos corticais sensíveis à orientação.',
     curiosity: 'O efeito pode mudar quando o tamanho da grade, o contraste ou a posição do olhar são alterados.',
     shareText: 'Tentei caçar os pontos fantasmas na Grade de Hermann do MindFlip e eles somem na hora! Muito divertido.',
     labControls: [
