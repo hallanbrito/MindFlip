@@ -88,7 +88,7 @@ export const FeedView: React.FC<Props> = ({
   const currentIllusion = filteredIllusions[currentIndex] || ILLUSIONS_DATA[0];
 
   return (
-    <div ref={containerRef} className="w-full flex flex-col items-center pb-16">
+    <div ref={containerRef} className="w-full min-w-0 max-w-full overflow-x-clip flex flex-col items-center pb-16">
       {/* Game-like Hero Section (shows when first landing) */}
       {!hasStartedPlaying && (
         <section className="w-full max-w-4xl mx-auto px-4 pt-4 pb-8 sm:pt-8 sm:pb-12 text-center flex flex-col items-center">
@@ -130,7 +130,7 @@ export const FeedView: React.FC<Props> = ({
       )}
 
       {/* Category Filter Horizontal Scrollbar */}
-      <div className="w-full max-w-2xl px-4 my-3">
+      <div className="w-full min-w-0 max-w-2xl px-3 sm:px-4 my-3">
         <div className="flex items-center justify-between gap-2 mb-2">
           <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
             <Eye className="w-3.5 h-3.5 text-cyan-400" />
@@ -155,7 +155,7 @@ export const FeedView: React.FC<Props> = ({
           </button>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-1.5 scrollbar-thin no-scrollbar">
+        <div className="w-full min-w-0 flex gap-2 overflow-x-auto overscroll-x-contain pb-1.5 scrollbar-thin no-scrollbar">
           {CATEGORIES_LIST.map(cat => (
             <button
               key={cat.id}
@@ -178,19 +178,19 @@ export const FeedView: React.FC<Props> = ({
       </div>
 
       {/* Challenge Navigation Status Bar */}
-      <div className="w-full max-w-md px-4 flex items-center justify-between text-xs font-mono text-slate-400 mb-2">
-        <div className="flex items-center gap-2">
+      <div className="w-full min-w-0 max-w-md px-3 sm:px-4 flex items-center justify-between gap-2 text-xs font-mono text-slate-400 mb-2">
+        <div className="min-w-0 flex items-center gap-2">
           <span className="text-cyan-400 font-bold">
             #{currentIndex + 1} de {filteredIllusions.length}
           </span>
           <span className="text-slate-600">•</span>
-          <span className="text-slate-400 truncate max-w-[160px]">
+          <span className="min-w-0 text-slate-400 truncate max-w-[160px]">
             {currentIllusion.title}
           </span>
         </div>
 
         {/* Desktop / Mobile arrow buttons */}
-        <div className="flex items-center gap-1">
+        <div className="shrink-0 flex items-center gap-1">
           <button
             type="button"
             onClick={goToPrev}
@@ -213,7 +213,7 @@ export const FeedView: React.FC<Props> = ({
       </div>
 
       {/* Active Challenge Card */}
-      <div id="active-challenge" className="w-full px-3 sm:px-4 flex justify-center">
+      <div id="active-challenge" className="w-full min-w-0 max-w-full px-3 sm:px-4 flex justify-center">
         <ChallengeCard
           key={currentIllusion.id}
           illusion={currentIllusion}

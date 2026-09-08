@@ -162,15 +162,15 @@ export const ChallengeCard: React.FC<Props> = ({
 
   return (
     <article
-      className="w-full max-w-md mx-auto bg-[#0a0d16] border border-slate-800/90 rounded-3xl p-4 sm:p-6 shadow-2xl relative overflow-hidden flex flex-col items-center"
+      className="w-full min-w-0 max-w-md mx-auto bg-[#0a0d16] border border-slate-800/90 rounded-3xl p-4 sm:p-6 shadow-2xl relative overflow-hidden flex flex-col items-center"
       aria-labelledby={`heading-${illusion.id}`}
     >
       {/* Subtle background ambient radial gradient */}
       <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-cyan-500/10 via-purple-500/5 to-transparent pointer-events-none" />
 
       {/* Header tags: Category & Difficulty */}
-      <div className="w-full flex items-center justify-between mb-3 z-10">
-        <div className="flex items-center gap-1.5">
+      <div className="w-full min-w-0 flex flex-wrap items-center justify-between gap-2 mb-3 z-10">
+        <div className="min-w-0 flex flex-wrap items-center gap-1.5">
           <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 uppercase tracking-wider">
             {illusion.category}
           </span>
@@ -189,7 +189,7 @@ export const ChallengeCard: React.FC<Props> = ({
 
       {/* Title & Subtitle */}
       <div className="w-full text-left mb-3 z-10">
-        <h2 id={`heading-${illusion.id}`} className="text-xl sm:text-2xl font-extrabold text-white tracking-tight flex items-center gap-2">
+        <h2 id={`heading-${illusion.id}`} className="text-xl sm:text-2xl font-extrabold text-white tracking-tight break-words flex items-center gap-2">
           {illusion.title}
         </h2>
         <p className="text-xs text-slate-400 font-medium mt-0.5">
@@ -206,7 +206,7 @@ export const ChallengeCard: React.FC<Props> = ({
       )}
 
       {/* Interactive Visual Engine */}
-      <div className="w-full my-2 flex items-center justify-center">
+      <div className="w-full min-w-0 max-w-full my-2 overflow-hidden flex items-center justify-center">
         <IllusionEngine
           illusion={illusion}
           reducedMotion={reducedMotion}
