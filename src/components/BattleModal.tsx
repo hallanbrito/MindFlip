@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Illusion } from '../types';
 import { playClickTone, playSuccessTone } from '../utils/audio';
+import { normalizeBattleTime, sanitizeChallenger } from '../utils/battle';
 import {
   X,
   Swords,
@@ -31,9 +32,11 @@ export const BattleModal: React.FC<Props> = ({
   if (!isOpen) return null;
 
   const appUrl = typeof window !== 'undefined' ? window.location.origin : 'https://mindflip.app';
-  const battleUrl = `${appUrl}?battle=1&challenger=${encodeURIComponent(userName)}&ill=${illusion.id}&time=${recordedTime.toFixed(1)}`;
+  const safeUserName = sanitizeChallenger(userName);
+  const safeRecordedTime = normalizeBattleTime(recordedTime);
+  const battleUrl = `${appUrl}?battle=1&challenger=${encodeURIComponent(safeUserName)}&ill=${encodeURIComponent(illusion.id)}&time=${safeRecordedTime.toFixed(1)}`;
 
-  const shareText = `⚔️ ${userName} te desafiou para uma Batalha de Cérebros no MindFlip!\n\nTempo alcançado na ilusão "${illusion.title}": ${recordedTime.toFixed(1)} segundos.\n\nSeu cérebro consegue virar a percepção mais rápido?\nAceite o duelo: ${battleUrl}`;
+  const shareText = `⚔️ ${safeUserName} te desafiou para uma Batalha de Cérebros no MindFlip!\n\nTempo alcançado na ilusão "${illusion.title}": ${safeRecordedTime.toFixed(1)} segundos.\n\nSeu cérebro consegue virar a percepção mais rápido?\nAceite o duelo: ${battleUrl}`;
 
   const handleCopy = async () => {
     try {
@@ -61,15 +64,15 @@ export const BattleModal: React.FC<Props> = ({
   };
 
   const shareWhatsApp = () => {
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer');
   };
 
   const shareTwitter = () => {
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`, '_blank');
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer');
   };
 
   const shareTelegram = () => {
-    window.open(`https://t.me/share/url?url=${encodeURIComponent(battleUrl)}&text=${encodeURIComponent(shareText)}`, '_blank');
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(battleUrl)}&text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer');
   };
 
   return (

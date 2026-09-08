@@ -6,7 +6,7 @@ import {
   Eye,
   RotateCcw,
   ShieldCheck,
-  Smartphone
+  Database
 } from 'lucide-react';
 import { playClickTone } from '../utils/audio';
 
@@ -16,6 +16,7 @@ interface Props {
   soundEnabled: boolean;
   onToggleSound: () => void;
   reducedMotion: boolean;
+  systemPrefersReducedMotion?: boolean;
   onToggleReducedMotion: () => void;
   onResetData: () => void;
 }
@@ -26,6 +27,7 @@ export const SettingsModal: React.FC<Props> = ({
   soundEnabled,
   onToggleSound,
   reducedMotion,
+  systemPrefersReducedMotion = false,
   onToggleReducedMotion,
   onResetData
 }) => {
@@ -72,6 +74,9 @@ export const SettingsModal: React.FC<Props> = ({
 
             <button
               type="button"
+              role="switch"
+              aria-checked={soundEnabled}
+              aria-label="Ativar ou desativar efeitos sonoros"
               onClick={() => {
                 playClickTone();
                 onToggleSound();
@@ -96,17 +101,25 @@ export const SettingsModal: React.FC<Props> = ({
               </div>
               <div>
                 <div className="text-xs font-bold text-white">Movimento Reduzido</div>
-                <div className="text-[11px] text-slate-400">Desativa rotações rápidas e confetes</div>
+                <div className="text-[11px] text-slate-400">
+                  {systemPrefersReducedMotion
+                    ? 'Ativo pela preferência do seu sistema'
+                    : 'Desativa rotações rápidas e confetes'}
+                </div>
               </div>
             </div>
 
             <button
               type="button"
+              role="switch"
+              aria-checked={reducedMotion}
+              aria-label="Ativar ou desativar movimento reduzido"
+              disabled={systemPrefersReducedMotion}
               onClick={() => {
                 playClickTone();
                 onToggleReducedMotion();
               }}
-              className={`w-12 h-6 rounded-full p-1 transition-colors ${
+              className={`w-12 h-6 rounded-full p-1 transition-colors disabled:cursor-not-allowed disabled:opacity-70 ${
                 reducedMotion ? 'bg-purple-500' : 'bg-slate-700'
               }`}
             >
@@ -118,10 +131,10 @@ export const SettingsModal: React.FC<Props> = ({
             </button>
           </div>
 
-          {/* Device & PWA Notice */}
+          {/* Local persistence notice */}
           <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 flex items-center gap-2.5 text-xs text-slate-400">
-            <Smartphone className="w-4 h-4 text-cyan-400 shrink-0" />
-            <span>Adicione à tela inicial do celular para jogar offline como um app nativo.</span>
+            <Database className="w-4 h-4 text-cyan-400 shrink-0" />
+            <span>Progresso e preferências ficam armazenados neste navegador.</span>
           </div>
 
           {/* Reset Data */}

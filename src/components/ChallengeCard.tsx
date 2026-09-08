@@ -329,7 +329,7 @@ export const ChallengeCard: React.FC<Props> = ({
               <p className="text-xs text-slate-400 max-w-xs mx-auto">
                 {personalBest && timerSeconds > 0 && timerSeconds <= personalBest
                   ? '🎉 Novo recorde pessoal de velocidade de percepção!'
-                  : 'Seu cérebro reorganizou a representação neural com sucesso.'}
+                  : 'Você relatou uma mudança na sua percepção da imagem.'}
               </p>
 
               {/* Action row: Share + Retry */}

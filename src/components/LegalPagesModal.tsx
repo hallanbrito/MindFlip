@@ -122,14 +122,15 @@ export const LegalPagesModal: React.FC<Props> = ({
 
           {activeTab === 'privacidade' && (
             <div>
-              <h3 className="text-base font-bold text-white mb-2">Política de Privacidade (LGPD & GDPR)</h3>
+              <h3 className="text-base font-bold text-white mb-2">Política de Privacidade</h3>
               <p>
                 Sua privacidade é prioritária. O MindFlip foi arquitetado sob o princípio de <em>Privacy by Design</em>:
               </p>
               <ul className="list-disc pl-5 space-y-1.5 mt-2 text-slate-400">
-                <li><strong>Armazenamento Local:</strong> Seu progresso, pontuações, sequências de dias e recordes são gravados diretamente no armazenamento do seu dispositivo (<code>localStorage</code>) e nunca são transmitidos a servidores centrais.</li>
+                <li><strong>Armazenamento Local:</strong> Seu progresso, pontuações, sequências de dias, recordes e preferências são gravados no armazenamento deste navegador (<code>localStorage</code>). O MindFlip não envia esses registros a um servidor próprio.</li>
                 <li><strong>Sem Cadastro Obrigatório:</strong> Você pode usufruir de todas as 15 ilusões, modo laboratório e desafios diários sem necessidade de informar e-mail, telefone ou dados sensíveis.</li>
-                <li><strong>Dados Anônimos de Uso:</strong> Podemos coletar métricas agregadas estritamente técnicas (tempo de carregamento, erros de script, eventos anônimos de interação) para otimização de performance.</li>
+                <li><strong>Eventos técnicos:</strong> Eventos de interação usados pela interface permanecem temporariamente na memória da página e não são enviados a um serviço externo de analytics.</li>
+                <li><strong>Compartilhamento:</strong> Ao escolher compartilhar um duelo, você envia voluntariamente o apelido, a ilusão e o tempo pelos aplicativos ou sites selecionados.</li>
               </ul>
             </div>
           )}
@@ -138,10 +139,10 @@ export const LegalPagesModal: React.FC<Props> = ({
             <div>
               <h3 className="text-base font-bold text-white mb-2">Política de Cookies & Tecnologias Similares</h3>
               <p>
-                Utilizamos cookies essenciais e recursos de armazenamento local para salvar suas preferências de acessibilidade (como som ativado/desativado e modo de movimento reduzido) e registrar seus pontos no jogo.
+                A versão atual não cria cookies próprios. Utilizamos <code>localStorage</code> para salvar preferências de acessibilidade, progresso e pontuação neste navegador.
               </p>
               <p className="mt-2 text-slate-400">
-                Parceiros de publicidade ética e analytics podem utilizar identificadores anônimos de acordo com as normas vigentes de proteção a dados, sem criação de perfis comportamentais invasivos.
+                Os espaços de publicidade exibidos são apenas demonstrativos. Não há parceiro publicitário nem serviço externo de analytics integrado nesta versão.
               </p>
             </div>
           )}

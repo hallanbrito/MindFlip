@@ -21,8 +21,8 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Incline a cabeça levemente para alterar o ângulo perceptual.'
     ],
     explanation: 'A animação não tem profundidade 2D: é uma projeção ortográfica plana sem pistas de oclusão ou sombra. Seu cérebro precisa adivinhar qual lado está na frente.',
-    scienceExplanation: 'Este fenômeno é uma ilusão biestável de percepção cinética. Como a silhueta não possui iluminação ou linhas de contorno tridimensionais, o córtex visual reconstrói a profundidade usando suposições internas (prior bayesiano). Quando você força a inversão, os neurônios do córtex parietal reordenam a hipótese espacial.',
-    curiosity: 'Pesquisas mostram que a maioria das pessoas enxerga inicialmente a rotação no sentido horário porque o cérebro prefere assumir que estamos vendo o objeto de um ângulo ligeiramente superior.',
+    scienceExplanation: 'Este é um estímulo biestável: como a silhueta oferece poucas pistas de profundidade, ela admite mais de uma interpretação. Modelos científicos relacionam as alternâncias a processos sensoriais e cognitivos concorrentes.',
+    curiosity: 'A direção percebida pode mudar mesmo quando a animação permanece exatamente igual.',
     shareText: 'Consegui inverter a rotação ambígua da silhueta! Você consegue virar a percepção do seu cérebro no MindFlip?',
     motionWarning: true,
     labControls: [
@@ -50,7 +50,7 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Pisque rapidamente para quebrar a dominância neural.'
     ],
     explanation: 'Como todas as arestas têm a mesma espessura e não há sombras, o desenho 2D contém duas representações 3D matematicamente idênticas.',
-    scienceExplanation: 'Descrito pelo cristalógrafo suíço Louis Albert Necker em 1832, este é o exemplo canônico de percepção multi-estável. Grupos de neurônios que codificam uma interpretação 3D sofrem fadiga sináptica após alguns segundos, permitindo que a interpretação alternativa assuma o controle da consciência visual.',
+    scienceExplanation: 'Descrito por Louis Albert Necker em 1832, o desenho admite duas organizações espaciais. Competição, adaptação e atenção aparecem em modelos de percepção multiestável, sem que o site consiga medir diretamente esses mecanismos.',
     curiosity: 'O cérebro humano raramente aceita o cubo como um desenho plano de 12 linhas: ele insiste em transformá-lo num sólido tridimensional.',
     shareText: 'Acabei de alternar o Cubo de Necker no MindFlip! Consegue inverter sua percepção mais rápido que eu?',
     labControls: [
@@ -78,7 +78,7 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Perceba como a mesma linha de contorno pertence a apenas uma das figuras por vez.'
     ],
     explanation: 'A mesma linha de contorno serve como limite para a figura e para o fundo. O cérebro só pode atribuir a propriedade de "borda" a um dos lados por vez.',
-    scienceExplanation: 'Desenvolvido em 1915 pelo psicólogo dinamarquês Edgar Rubin, demonstra a lei gestáltica da segregação figura-fundo no córtex visual primário (V1 e V2). A área fusiforme de rostos (FFA) é ativada quando você percebe os perfis, mas se desativa quando você percebe o vaso.',
+    scienceExplanation: 'Popularizada por Edgar Rubin, a imagem demonstra a alternância figura-fundo: ora a região central é percebida como figura, ora os perfis laterais assumem esse papel.',
     curiosity: 'É praticamente impossível para a consciência humana processar simultaneamente as duas interpretações: elas operam em alternância competitiva.',
     shareText: 'Você vê rostos ou vaso? Testei minha percepção no MindFlip!',
     labControls: [
@@ -132,7 +132,7 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Perceba como o contraste de tamanho induz um erro de escala.'
     ],
     explanation: 'Um objeto idêntico parece menor quando cercado por objetos grandes e maior quando cercado por objetos pequenos.',
-    scienceExplanation: 'Descoberta pelo psicólogo alemão Hermann Ebbinghaus, a ilusão ocorre no córtex visual primário através de inibição lateral circundante. Os neurônios que respondem ao círculo central recebem sinais inibitórios dos neurônios que processam os elementos periféricos.',
+    scienceExplanation: 'O tamanho percebido do círculo central muda conforme o contexto ao redor. A explicação envolve processamento contextual de tamanho, e não uma medição direta feita por esta demonstração.',
     curiosity: 'Ilusões de tamanho relativo funcionam até no mundo real: colocar comida em pratos menores faz as pessoas sentirem que comeram mais.',
     shareText: 'Caí na ilusão dos Círculos de Ebbinghaus no MindFlip! O contexto engana nossos olhos completamente.',
     labControls: [
@@ -187,7 +187,7 @@ export const ILLUSIONS_DATA: Illusion[] = [
     ],
     explanation: 'O contraste entre os blocos pretos e brancos desfasados engana os detectores de borda da retina, criando vetores de orientação falsos.',
     scienceExplanation: 'Descoberta numa parede de azulejos de um café em Bristol, Inglaterra, na década de 1970 por Richard Gregory. Ocorre devido a interações de luminância no córtex visual primário (células simples sensíveis a orientação), gerando pequenas assimetrias de brilho nas junções que o cérebro interpreta como inclinação.',
-    curiosity: 'Essa ilusão é usada em testes de visão para calibrar a resposta neural a contrastes de alta frequência espacial.',
+    curiosity: 'A organização alternada dos blocos é suficiente para mudar a orientação aparente das linhas paralelas.',
     shareText: 'Linhas 100% retas que parecem completamente tortas na Parede de Café do MindFlip! Tente você mesmo.',
     labControls: [
       { id: 'offset', label: 'Deslocamento dos Azulejos', min: 0, max: 50, step: 5, defaultValue: 25, unit: 'px' },
@@ -215,7 +215,7 @@ export const ILLUSIONS_DATA: Illusion[] = [
     ],
     explanation: 'Ao fixar o centro, os fotorreceptores periféricos se esgotam (efeito Troxler) e o cérebro substitui o espaço vazio pela cor complementar oposta: verde.',
     scienceExplanation: 'O efeito Troxler (1804) demonstra que estímulos invariantes na visão periférica são filtrados pelo sistema nervoso central como ruído de fundo. Quando a bolinha lilás apaga temporariamente, o pós-efeito negativo dos cones retinianos sensibiliza a percepção para o comprimento de onda verde complementar.',
-    curiosity: 'Seus olhos na verdade nunca ficam 100% parados: eles fazem microssacadas involuntárias o tempo todo para impedir que o mundo inteiro desapareça da sua visão!',
+    curiosity: 'Mesmo durante a fixação, os olhos realizam pequenos movimentos involuntários que influenciam a visibilidade de estímulos estáticos.',
     shareText: 'Fiz pontos desaparecerem e vi um feixe verde correr com a mente no Lilac Chaser do MindFlip!',
     motionWarning: true,
     labControls: [
@@ -241,7 +241,7 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Deixe a contagem regressiva de 15 segundos completar.',
       'Não desvie o olhar até a imagem estática aparecer.'
     ],
-    explanation: 'Os neurônios sensíveis ao movimento em direção ao centro ficam fatigados. Quando você olha para algo parado, os neurônios opostos disparam mais rápido, criando movimento ilusório.',
+    explanation: 'A exposição prolongada a uma direção de movimento adapta o sistema visual. Ao olhar depois para uma imagem parada, o equilíbrio entre sinais de direções opostas pode produzir movimento aparente.',
     scienceExplanation: 'Documentado por Aristóteles e formalizado por Robert Addams em 1834 na Cachoeira de Foyers. A área cortical MT/V5 possui populações de neurônios sintonizados com direções de movimento específicas. A adaptação neural reduz a taxa de disparo espontânea das células estimuladas, gerando um desequilíbrio na leitura da rede neural.',
     curiosity: 'É o mesmo efeito neurológico que faz você sentir que o chão continua se movendo quando você desce de uma esteira ergométrica.',
     shareText: 'A imagem estática começou a se mover e respirar na minha frente no MindFlip! Que loucura neurológica.',
@@ -324,7 +324,7 @@ export const ILLUSIONS_DATA: Illusion[] = [
     ],
     explanation: 'Os receptores de cores na retina se cansam de processar as cores falsas. Quando você olha para uma tela branca (que reflete todas as cores), os receptores descansados respondem com força.',
     scienceExplanation: 'Baseia-se na teoria do processo oponente de Ewald Hering. Os circuitos neurais visuais codificam cores em pares antagônicos: vermelho versus verde, azul versus amarelo, preto versus branco. A adaptação temporária de um canal desbalanceia o sinal para a cor oposta.',
-    curiosity: 'Cirurgiões usam jalecos verdes ou azuis exatamente por isso: olhar para sangue vermelho por horas causaria pós-imagens vermelhas que atrapalhariam a cirurgia em superfícies brancas.',
+    curiosity: 'Pós-imagens também podem aparecer depois de observar por algum tempo outros contrastes fortes de cor.',
     shareText: 'Meu cérebro pintou uma bandeira no branco do nada no MindFlip! Impressionante.',
     labControls: [
       { id: 'timerDuration', label: 'Tempo de Fixação', min: 8, max: 25, step: 1, defaultValue: 15, unit: 's' }
@@ -348,7 +348,7 @@ export const ILLUSIONS_DATA: Illusion[] = [
       'Mantenha os dedos posicionados sobre os botões de resposta rápida.'
     ],
     explanation: 'A leitura é um processo automático supertreinado pelo cérebro, enquanto a nomeação de cor exige atenção consciente (processamento controlado).',
-    scienceExplanation: 'Publicado por John Ridley Stroop em 1935. Esse conflito ativa intensamente o Córtex Cingulado Anterior (ACC) e o Córtex Pré-Frontal Dorsolateral (DLPFC), áreas responsáveis pela resolução de interferência e controle inibitório.',
+    scienceExplanation: 'O efeito foi estudado por John Ridley Stroop em 1935. A demora adicional na condição incongruente é usada em pesquisa para estudar interferência, mas este minijogo não é um teste neuropsicológico validado.',
     curiosity: 'Crianças que ainda não aprenderam a ler completam esse teste muito mais rápido do que adultos com diploma universitário!',
     shareText: 'Tentei vencer o Desafio Stroop no MindFlip e meu cérebro travou completamente! Tente bater meu tempo.',
     labControls: [
@@ -402,7 +402,7 @@ export const ILLUSIONS_DATA: Illusion[] = [
     ],
     explanation: 'Nas interseções, há quatro faixas brancas vizinhas causando inibição lateral nos fotorreceptores. No centro da sua visão (fóvea), a resolução é alta e o efeito desaparece.',
     scienceExplanation: 'Descoberta por Ludimar Hermann em 1870. O modelo clássico explica o fenômeno por campos receptivos concêntricos (centro-periferia) de células ganglionares na retina. A maior quantidade de luz ao redor nas encruzilhadas inibe a resposta do centro receptor.',
-    curiosity: 'A Grade de Hermann inspirou mais de 150 variações modernas na neurociência para estudar como a retina pré-processa imagens antes mesmo de chegarem ao cérebro.',
+    curiosity: 'O efeito pode mudar quando o tamanho da grade, o contraste ou a posição do olhar são alterados.',
     shareText: 'Tentei caçar os pontos fantasmas na Grade de Hermann do MindFlip e eles somem na hora! Muito divertido.',
     labControls: [
       { id: 'gridSize', label: 'Quantidade de Quadrados', min: 3, max: 8, step: 1, defaultValue: 5 },

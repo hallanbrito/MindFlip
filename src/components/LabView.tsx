@@ -12,7 +12,11 @@ import {
   Volume2
 } from 'lucide-react';
 
-export const LabView: React.FC = () => {
+interface Props {
+  reducedMotion?: boolean;
+}
+
+export const LabView: React.FC<Props> = ({ reducedMotion = false }) => {
   const [selectedId, setSelectedId] = useState<string>('rotacao-ambigua');
   const [isAudioLab, setIsAudioLab] = useState<boolean>(false);
 
@@ -139,6 +143,7 @@ export const LabView: React.FC = () => {
               <IllusionEngine
                 illusion={selectedIllusion}
                 customParams={currentParams}
+                reducedMotion={reducedMotion}
               />
             )}
           </div>
@@ -231,13 +236,13 @@ export const LabView: React.FC = () => {
                 })
               ) : (
                 <div className="p-4 rounded-xl bg-slate-900 text-center text-xs text-slate-400">
-                  Esta ilusão já se encontra em calibração científica ideal para observação.
+                  Esta demonstração não possui parâmetros ajustáveis nesta versão.
                 </div>
               )}
 
               {/* Scientific Note */}
               <div className="p-3 rounded-xl bg-purple-950/30 border border-purple-800/40 text-[11px] text-purple-300/90 leading-relaxed">
-                🔬 <strong>Experimentação Científica:</strong> Alterar as variáveis ajuda você a identificar qual informação seu córtex visual utiliza para construir profundidade, contorno ou cor.
+                🔬 <strong>Exploração educativa:</strong> Alterar as variáveis permite comparar como o estímulo visual muda. Esta atividade não mede diretamente processos cerebrais.
               </div>
             </div>
           )}
