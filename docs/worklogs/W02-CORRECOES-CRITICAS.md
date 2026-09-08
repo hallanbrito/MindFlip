@@ -1,6 +1,6 @@
 # W02 — Correções Críticas de Conformidade do MindFlip
 
-Status: pronto para revisão  
+Status: aprovado pelo Product Owner; integração pendente
 Tipo: correção e conformidade  
 Data: 2026-09-08
 
@@ -22,6 +22,14 @@ A W01 previa a W02 como uma auditoria sem correções. A auditoria ocorreu fora 
 - Nível de autonomia: `CH-2 — Executar isolado`
 - Registro de autorização: **Aprovado**, manifestado pelo Product Owner em 2026-09-08 após apresentação do Contrato de Execução
 - Condição de parada: Draft PR pronta para revisão; sem merge e sem deployment
+
+## Registro de Aceitação
+
+- Decisão humana: **aprovado** por Hallan, Product Owner, em 2026-09-08.
+- Objeto do aceite: correções e Pacote de Evidências apresentados na Draft PR #2.
+- Autorização de integração: **não concedida nesta manifestação**.
+- Estado da integração: pendente da declaração literal **AUTORIZADO**.
+- Draft PR, branch e deploy devem permanecer inalterados quanto à integração até essa autorização.
 
 ## 4. Contrato de Execução
 
@@ -154,7 +162,7 @@ Antes do merge, a reversão consiste em fechar a Draft PR e abandonar a branch. 
 - [x] Testes, lint, build e `diff --check` aprovados.
 - [x] Nenhuma dependência, analytics real, anúncio real, CI/CD ou deploy foi adicionado.
 - [ ] Revisão visual humana da build corrigida.
-- [ ] Registro de Aceitação do Product Owner.
+- [x] Registro de Aceitação do Product Owner.
 - [ ] Integração autorizada.
 
 ## 11. Próxima fatia recomendada
@@ -165,4 +173,4 @@ Objetivo recomendado: revisar cada ilusão contra fontes primárias ou revisões
 
 ## 12. Estado final
 
-**Pronto para revisão.** A execução agêntica termina na Draft PR. O agente não aprova o próprio trabalho, não integra a branch e não publica a aplicação.
+**Aprovado pelo Product Owner; integração pendente.** O agente não integra a branch e não publica a aplicação sem a autorização literal exigida pelo fluxo C.H.
