@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { Illusion, UserProgress } from '../types';
 import { IllusionEngine } from './illusions/IllusionEngine';
+import { getScientificReferences } from '../data/scientificReferences';
 import { playClickTone, playFlipWhoosh, playSuccessTone } from '../utils/audio';
 import { recordAttempt } from '../utils/storage';
 import { trackEvent } from '../utils/analytics';
@@ -157,6 +158,7 @@ export const ChallengeCard: React.FC<Props> = ({
   };
 
   const personalBest = userProgress.bestTimes[illusion.id];
+  const scientificReferences = getScientificReferences(illusion.id);
 
   return (
     <article
@@ -405,6 +407,25 @@ export const ChallengeCard: React.FC<Props> = ({
               ) : (
                 <div className="text-xs text-slate-300 leading-relaxed space-y-2">
                   <p>{illusion.scienceExplanation}</p>
+                  <div className="rounded-lg border border-slate-700/80 bg-slate-950/50 p-2.5">
+                    <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-cyan-300">
+                      Fontes desta explicação
+                    </p>
+                    <ul className="space-y-1.5">
+                      {scientificReferences.map(reference => (
+                        <li key={reference.id}>
+                          <a
+                            className="text-[11px] text-cyan-400 underline decoration-cyan-700 underline-offset-2 hover:text-cyan-300"
+                            href={reference.url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {reference.authors} ({reference.year}). {reference.title}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                   <div className="text-[11px] text-purple-300/80 bg-purple-950/40 p-2 rounded-lg border border-purple-800/40">
                     🔬 <strong>Base Científica:</strong> Estes desafios são experiências de percepção e entretenimento, não testes médicos ou diagnósticos clínicos.
                   </div>

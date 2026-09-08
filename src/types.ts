@@ -26,6 +26,23 @@ export interface LabControlConfig {
   unit?: string;
 }
 
+export type ScientificReferenceKind =
+  | 'primary-study'
+  | 'review'
+  | 'historical-source'
+  | 'institutional';
+
+export interface ScientificReference {
+  id: string;
+  title: string;
+  authors: string;
+  year: number;
+  kind: ScientificReferenceKind;
+  url: string;
+  doi?: string;
+  supports: string;
+}
+
 export interface Illusion {
   id: string;
   slug: string;
