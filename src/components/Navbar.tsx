@@ -38,15 +38,17 @@ export const Navbar: React.FC<Props> = ({
   const currentLevel = calculateLevel(userProgress.mentalScore);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#08090d]/90 backdrop-blur-md border-b border-slate-800/80">
-      <div className="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
+    <header className="sticky top-0 z-50 w-full max-w-full overflow-x-clip bg-[#08090d]/90 backdrop-blur-md border-b border-slate-800/80">
+      <div className="w-full min-w-0 max-w-6xl mx-auto px-2 sm:px-6 h-14 sm:h-16 flex items-center gap-1 sm:gap-3">
         {/* Brand Logo */}
-        <div
+        <button
+          type="button"
           onClick={() => {
             playClickTone();
             setActiveTab('feed');
           }}
-          className="flex items-center gap-2 cursor-pointer select-none group"
+          className="shrink-0 flex items-center gap-2 cursor-pointer select-none group rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+          aria-label="Ir para os desafios do MindFlip"
         >
           <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-purple-600 p-0.5 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
             <div className="w-full h-full bg-[#090b12] rounded-[10px] flex items-center justify-center">
@@ -56,7 +58,7 @@ export const Navbar: React.FC<Props> = ({
             </div>
           </div>
 
-          <div className="flex flex-col">
+          <div className="hidden lg:flex flex-col">
             <div className="flex items-center gap-1.5">
               <span className="font-display font-black tracking-tight text-white text-base sm:text-lg">
                 MIND<span className="text-cyan-400">FLIP</span>
@@ -69,49 +71,52 @@ export const Navbar: React.FC<Props> = ({
               Vire seu cérebro
             </span>
           </div>
-        </div>
+        </button>
 
         {/* Center Nav tabs */}
-        <nav className="flex items-center gap-1 sm:gap-2">
+        <nav className="min-w-0 flex-1 flex items-center justify-center gap-0.5 sm:gap-2" aria-label="Navegação principal">
           <button
             type="button"
+            aria-label="Abrir desafios"
             onClick={() => {
               playClickTone();
               setActiveTab('feed');
             }}
-            className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-all ${
+            className={`p-2 sm:px-3 sm:py-1.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-all ${
               activeTab === 'feed'
                 ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/10'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
             }`}
           >
             <Compass className="w-4 h-4" />
-            <span className="hidden xs:inline">Desafios</span>
+            <span className="hidden md:inline">Desafios</span>
           </button>
 
           <button
             type="button"
+            aria-label="Abrir laboratório"
             onClick={() => {
               playClickTone();
               setActiveTab('lab');
             }}
-            className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-all ${
+            className={`p-2 sm:px-3 sm:py-1.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-all ${
               activeTab === 'lab'
                 ? 'bg-purple-500/15 text-purple-300 border border-purple-500/40 shadow-sm shadow-purple-500/10'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
             }`}
           >
             <FlaskConical className="w-4 h-4" />
-            <span className="hidden xs:inline">Laboratório</span>
+            <span className="hidden md:inline">Laboratório</span>
           </button>
 
           <button
             type="button"
+            aria-label="Abrir desafio diário"
             onClick={() => {
               playClickTone();
               onOpenDaily();
             }}
-            className="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 transition-all"
+            className="p-2 sm:px-3 sm:py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 transition-all"
             title="Desafio Impossível do Dia"
           >
             <Calendar className="w-4 h-4 text-amber-400" />
@@ -120,11 +125,12 @@ export const Navbar: React.FC<Props> = ({
 
           <button
             type="button"
+            aria-label="Abrir artigos de ciência"
             onClick={() => {
               playClickTone();
               setActiveTab('articles');
             }}
-            className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-all ${
+            className={`p-2 sm:px-3 sm:py-1.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-all ${
               activeTab === 'articles'
                 ? 'bg-blue-500/15 text-blue-300 border border-blue-500/40'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -136,21 +142,23 @@ export const Navbar: React.FC<Props> = ({
         </nav>
 
         {/* Right Stats & Tools */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
+        <div className="shrink-0 flex items-center gap-0.5 sm:gap-2.5">
           {/* Daily Streak */}
-          <div
+          <button
+            type="button"
             onClick={onOpenDaily}
-            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-900 border border-slate-800 text-amber-400 text-xs font-bold cursor-pointer hover:border-amber-500/40 transition-colors"
+            className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-900 border border-slate-800 text-amber-400 text-xs font-bold cursor-pointer hover:border-amber-500/40 transition-colors"
             title="Sequência de dias ativos"
           >
             <Flame className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
             <span>{userProgress.streak}</span>
-          </div>
+          </button>
 
           {/* Level / Score Badge */}
-          <div
+          <button
+            type="button"
             onClick={onOpenAchievements}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gradient-to-r from-cyan-950/60 to-purple-950/60 border border-cyan-500/30 text-xs cursor-pointer hover:border-cyan-400/60 transition-all"
+            className="flex items-center gap-1 px-1.5 sm:px-2.5 py-1.5 sm:py-1 rounded-lg bg-gradient-to-r from-cyan-950/60 to-purple-950/60 border border-cyan-500/30 text-xs cursor-pointer hover:border-cyan-400/60 transition-all"
             title="Ver conquistas e nível mental"
           >
             <Award className="w-3.5 h-3.5 text-cyan-400" />
@@ -159,10 +167,10 @@ export const Navbar: React.FC<Props> = ({
                 {currentLevel.name}
               </span>
               <span className="font-mono text-xs font-bold text-white leading-none">
-                {userProgress.mentalScore} pts
+                {userProgress.mentalScore}<span className="hidden sm:inline"> pts</span>
               </span>
             </div>
-          </div>
+          </button>
 
           {/* Sound toggle quick button */}
           <button
@@ -171,7 +179,7 @@ export const Navbar: React.FC<Props> = ({
               playClickTone();
               onToggleSound();
             }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
             aria-label={soundEnabled ? 'Silenciar áudio' : 'Ativar efeitos sonoros'}
             title={soundEnabled ? 'Silenciar áudio' : 'Ativar áudio'}
           >
@@ -185,7 +193,7 @@ export const Navbar: React.FC<Props> = ({
               playClickTone();
               onOpenSettings();
             }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
             aria-label="Abrir configurações e acessibilidade"
             title="Configurações e Acessibilidade"
           >

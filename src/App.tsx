@@ -149,7 +149,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#08090d] text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-slate-950">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-[#08090d] text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-slate-950">
       {/* Top Fixed / Sticky Navigation */}
       <Navbar
         userProgress={userProgress}
@@ -203,7 +203,7 @@ export default function App() {
       )}
 
       {/* Main Content View Switcher */}
-      <main className="flex-1 w-full flex flex-col items-center">
+      <main className="flex-1 w-full min-w-0 max-w-full overflow-x-clip flex flex-col items-center">
         {activeTab === 'feed' && (
           <FeedView
             userProgress={userProgress}
