@@ -1,8 +1,15 @@
 # W01 — Fundação C.H. do MindFlip
 
-Status: pronto para revisão do Product Owner  
+Status: aprovado pelo Product Owner e autorizado para integração  
 Tipo: documentação e governança  
 Data: 2026-09-08
+
+## Registro de Aceitação
+
+- Decisão humana: **aprovado** por Hallan, Product Owner.
+- Autorização de integração: concedida pela manifestação literal **AUTORIZADO** em 2026-09-08.
+- Escopo autorizado: concluir exclusivamente a W01 pela Draft PR #1, sem iniciar correções da W02.
+- Limpeza: a branch deve ser preservada até autorização específica para exclusão.
 
 ## 1. Intenção
 
@@ -93,7 +100,7 @@ Descobertas nessas áreas devem ser tratadas em futuras Fatias W.
 | `docs/00-FUNDACAO-CH.md` | Definir a constituição C.H. aplicada ao produto |
 | `docs/worklogs/W01-FUNDACAO-CH.md` | Registrar contrato, execução e evidências desta fatia |
 
-Os entregáveis materializam os artefatos do método: este worklog contém o Contrato de Execução e o Pacote de Evidências; a Draft PR #1 é o Pedido de Integração; o Registro de Aceitação permanece pendente; após aceite e merge, os documentos passam a compor a Memória Versionada de `main`.
+Os entregáveis materializam os artefatos do método: este worklog contém o Contrato de Execução e o Pacote de Evidências; a Draft PR #1 é o Pedido de Integração; este worklog registra o aceite e a autorização do Product Owner; após o merge, os documentos passam a compor a Memória Versionada de `main`.
 
 ## 8. Critérios de aceitação
 
@@ -115,7 +122,7 @@ Os entregáveis materializam os artefatos do método: este worklog contém o Con
 - **H — Harmonizar:** objetivo, escopo, exclusões, autonomia `CH-2`, verificações, reversão e autoridade humana foram fechados neste contrato.
 - **A — Agir:** os quatro documentos foram criados e reconciliados na branch `docs/w01-foundation-ch`, sem mudança funcional.
 - **V — Verificar:** diff, caminhos, consistência documental e ausência de arquivos executáveis foram conferidos; resultados reais estão registrados abaixo.
-- **E — Evoluir:** a Draft PR #1 constitui o Pedido de Integração. Aceite humano, merge, limpeza da branch e incorporação definitiva à memória de `main` permanecem pendentes.
+- **E — Evoluir:** a Draft PR #1 constitui o Pedido de Integração. O aceite humano e a autorização literal foram registrados; o merge autorizado conclui a incorporação à memória de `main`, e a branch permanece preservada até autorização específica para exclusão.
 
 ## 10. Pacote de Evidências
 
@@ -158,7 +165,6 @@ Nenhum arquivo executável foi alterado. Lint e build confirmam a integridade t�
 
 ## 12. Riscos e limitações
 
-- a fundação ainda não foi validada pelo Product Owner;
 - textos existentes do produto podem divergir dos guardrails e exigem auditoria separada;
 - não há suíte de testes automatizados no estado observado;
 - afirmações científicas do catálogo não foram verificadas nesta fatia;
@@ -173,7 +179,7 @@ A W01 entrou em execução com objetivo, baseline, escopo, exclusões, critério
 
 A execução agêntica da W01 termina com a documentação criada em branch própria e entregue ao Product Owner para revisão. Nenhum ajuste funcional, merge ou publicação faz parte desta execução.
 
-O Done integral depende de Registro de Aceitação humano, integração autorizada, limpeza da branch e consolidação da Memória Versionada. Até lá, o estado permanece **pronto para revisão**.
+O Registro de Aceitação e a autorização de integração foram concedidos pelo Product Owner. O squash merge da Draft PR #1 consolida a Memória Versionada em `main`; a preservação da branch atende à regra de não excluí-la sem autorização específica.
 
 ## 15. Próxima fatia
 
