@@ -25,18 +25,19 @@ A documentação normativa começa em:
 
 ## Execução local
 
-Requisitos: Node.js compatível com o projeto e npm.
+Requisitos: [Bun](https://bun.sh/) 1.4.2 ou compatível.
 
 ~~~bash
-npm install
-npm run dev
+bun install --frozen-lockfile
+bun run dev
 ~~~
 
 Verificações disponíveis:
 
 ~~~bash
-npm run lint
-npm run build
+bun run lint
+bun test
+bun run build
 ~~~
 
 ## Nome canônico
