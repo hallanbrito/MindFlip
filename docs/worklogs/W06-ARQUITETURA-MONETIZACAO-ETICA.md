@@ -1,8 +1,16 @@
 # W06 — Arquitetura de Monetização Ética do MindFlip
 
-Status: pronto para revisão  
+Status: aprovado pelo Product Owner e autorizado para integração  
 Tipo: arquitetura e documentação  
 Data: 2026-09-08
+
+## Registro de Aceitação
+
+- Decisão humana: **aprovado** por Hallan, Product Owner.
+- Autorização de integração: concedida pela manifestação literal **Autorizado** em 2026-09-08.
+- Escopo autorizado: integrar exclusivamente a W06 pela Draft PR #6, sem iniciar a W07.
+- Método de integração: squash merge.
+- Deployment e exclusão da branch: não autorizados.
 
 ## 1. Intenção
 
@@ -25,7 +33,7 @@ Pela ordem de fontes da Fundação C.H., a autorização humana mais recente alt
 - Responsável humano: Hallan
 - Nível de autonomia: `CH-2 — Executar isolado`
 - Autorização de execução: manifestação literal **Aprovado** em 2026-09-08
-- Integração: não autorizada nesta etapa
+- Integração: autorizada exclusivamente pela Draft PR #6
 
 No commit-base:
 
@@ -149,7 +157,7 @@ Antes do merge, fechar a Draft PR e abandonar a branch mantém a `main` inaltera
 - **H — Harmonizar:** o contrato documental foi apresentado e aprovado pelo Product Owner; integração real, parceiro e coleta foram excluídos.
 - **A — Agir:** a arquitetura, este worklog e a navegação documental foram produzidos na branch isolada.
 - **V — Verificar:** diff, escopo, caminhos, consistência normativa e ausência de arquivos executáveis foram conferidos.
-- **E — Evoluir:** a Draft PR constitui o Pedido de Integração; a decisão de aceite e eventual merge permanecem com o Product Owner.
+- **E — Evoluir:** a Draft PR #6 constitui o Pedido de Integração; o aceite humano e a autorização literal foram registrados, permitindo o squash merge sem iniciar a W07.
 
 ## 6. Implementação documental
 
@@ -236,4 +244,4 @@ A W07 não está autorizada por este documento.
 
 ## 12. Estado final
 
-**Pronto para revisão.** A W06 não está aprovada em nome do Product Owner, não foi integrada e não ativa monetização real.
+**Aprovado pelo Product Owner e autorizado para integração.** O squash merge da PR #6 incorpora a W06 à `main`; nenhum deployment, integração publicitária real, início da W07 ou exclusão da branch foi autorizado.
