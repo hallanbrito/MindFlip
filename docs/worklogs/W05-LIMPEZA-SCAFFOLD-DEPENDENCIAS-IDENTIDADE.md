@@ -1,6 +1,6 @@
 # W05 — Limpeza de Scaffold, Dependências e Identidade
 
-Status: pronto para revisão do Product Owner
+Status: aprovado pelo Product Owner e autorizado para integração
 
 Tipo: manutenção técnica, dependências e identidade
 
@@ -23,7 +23,15 @@ O worklog da W04 recomendava provisoriamente **W05 — Matriz Visual Automatizad
 - Responsável humano: Hallan
 - Nível de autonomia: `CH-2 — Executar isolado`
 - Registro de autorização: **Aprovado**, manifestado pelo Product Owner em 2026-09-08 após apresentação do Contrato de Execução
-- Condição de parada: Draft PR pronta para revisão; sem merge e sem deployment
+- Condição de parada: squash merge autorizado na PR #5; sem deployment
+
+## Registro de Aceitação
+
+- Decisão humana: **aprovado** por Hallan, Product Owner, em 2026-09-08.
+- Objeto do aceite: implementação e Pacote de Evidências da W05 apresentados na Draft PR #5.
+- Autorização de integração: concedida pela manifestação literal **AUTORIZADO** em 2026-09-08.
+- Método autorizado: squash merge da PR #5 em `main`.
+- Deployment e exclusão da branch não foram autorizados.
 
 ## 4. Contrato de Execução
 
@@ -92,7 +100,7 @@ Antes do merge, fechar a Draft PR e abandonar a branch restaura a `main`. Depois
 - **H — Harmonizar:** escopo, exclusões, identidade, gerenciador de pacotes e critérios foram apresentados e aprovados pelo Product Owner.
 - **A — Agir:** a limpeza foi executada exclusivamente na branch isolada e nos arquivos permitidos.
 - **V — Verificar:** instalação congelada, TypeScript, testes, build, diff, escopo e resíduos conhecidos foram conferidos.
-- **E — Evoluir:** este worklog e a Draft PR formam a Memória Versionada, o Pacote de Evidências e o Pedido de Integração; aceite final e merge permanecem humanos.
+- **E — Evoluir:** este worklog e a PR #5 formam a Memória Versionada, o Pacote de Evidências e o Pedido de Integração; o aceite humano e a autorização de squash merge foram concedidos.
 
 ## 7. Implementação
 
@@ -175,4 +183,4 @@ Objetivo recomendado: fixar uma versão de runtime suportada e executar lint, te
 
 ## 14. Estado final
 
-**Pronto para revisão do Product Owner.** Nenhum merge ou deployment foi executado.
+**Aprovado pelo Product Owner e autorizado para integração.** O squash merge da PR #5 incorpora a W05 à `main`; nenhum deployment ou exclusão de branch foi autorizado.
