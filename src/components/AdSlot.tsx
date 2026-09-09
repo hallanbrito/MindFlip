@@ -44,6 +44,10 @@ export const AdSlot: React.FC<AdSlotProps> = ({ placement, className = '' }) => 
       .catch(() => setFailed(true));
   }, [canLoad]);
 
+  // A monetização preparada não deve ocupar espaço nem competir com o produto.
+  // O slot só se torna visível após configuração válida e permissão explícita.
+  if (!canLoad && !failed) return null;
+
   // Pre-reserved dimensions to guarantee zero Cumulative Layout Shift (CLS = 0)
   const getDimensions = () => {
     switch (placement) {
@@ -81,12 +85,6 @@ export const AdSlot: React.FC<AdSlotProps> = ({ placement, className = '' }) => 
     );
   }
 
-  const statusText = failed
-    ? 'Publicidade indisponível no momento'
-    : monetizationConfig.enabled && consent === 'denied'
-      ? 'Publicidade desativada pela sua escolha'
-      : 'Sem anúncios ativos nesta versão';
-
   return (
     <div
       className={`my-3 mx-auto flex flex-col items-center justify-center rounded-xl bg-[#0d101a]/70 border border-dashed border-slate-800 text-slate-500 overflow-hidden relative ${getDimensions()} ${className}`}
@@ -99,7 +97,7 @@ export const AdSlot: React.FC<AdSlotProps> = ({ placement, className = '' }) => 
       </div>
 
       <p className="text-xs text-slate-400 font-medium mt-1">
-        {statusText}
+        Publicidade indisponível no momento
       </p>
 
       <span className="text-[10px] text-slate-600 mt-0.5">
