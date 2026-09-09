@@ -13,6 +13,7 @@ A documentação normativa começa em:
 1. [Fundação C.H.](docs/00-FUNDACAO-CH.md)
 2. [Regras para agentes e colaboradores](AGENTS.md)
 3. [Registro da W01](docs/worklogs/W01-FUNDACAO-CH.md)
+4. [Arquitetura de Monetização Ética](docs/01-ARQUITETURA-MONETIZACAO.md)
 
 ## Princípios do produto
 
