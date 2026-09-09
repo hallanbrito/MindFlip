@@ -35,6 +35,7 @@ Reduzir o caminho entre a futura aprovação da conta AdSense e o primeiro teste
 - carregar o script apenas após configuração válida e permissão;
 - usar somente `between_challenges`;
 - preservar espaço e fornecer falha segura;
+- não exibir slot, placeholder ou chamada publicitária enquanto o gate não estiver liberado;
 - atualizar os textos de privacidade e cookies conforme o comportamento condicional;
 - adicionar testes unitários, documentação operacional e evidências.
 
@@ -93,6 +94,7 @@ Reduzir o caminho entre a futura aprovação da conta AdSense e o primeiro teste
 - [x] A escolha pode ser revisada.
 - [x] Apenas `between_challenges` pode receber o AdSense.
 - [x] Falha ou bloqueio mantém um estado seguro.
+- [x] Monetização desligada ou recusada não ocupa espaço na experiência.
 - [x] Textos legais correspondem ao comportamento condicional.
 - [x] Lint, testes, build e `git diff --check` aprovam.
 - [x] Nenhum ID real, segredo, deployment ou merge é incluído.
@@ -120,7 +122,8 @@ Parar se a solução exigir credencial, conta externa, custo, geolocalização, 
 - a escolha `granted` ou `denied` é armazenada localmente e pode ser limpa;
 - `ensureAdsenseScript` solicita modo não personalizado antes de carregar o script;
 - `AdConsentBanner` oferece ações equivalentes para permitir ou continuar sem anúncios;
-- `AdSlot` mantém o placeholder quando o piloto está desligado, recusado ou falha;
+- `AdSlot` não renderiza enquanto o piloto estiver desligado, sem permissão ou recusado;
+- após uma tentativa autorizada, falha do provedor mantém um placeholder seguro;
 - somente `between_challenges` pode disparar o adaptador;
 - a revisão da escolha limpa o estado e recarrega a página para impedir novas solicitações;
 - README, arquitetura e textos legais descrevem o comportamento condicional;
