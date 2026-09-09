@@ -1,6 +1,6 @@
 # W07 — Integração Publicitária Piloto
 
-Status: pronto para revisão  
+Status: aprovado para integração, com ativação comercial adiada  
 Tipo: funcional, privacidade e monetização  
 Data: 2026-09-09
 
@@ -174,17 +174,26 @@ Nenhuma dependência ou lockfile foi alterado.
 - bloqueadores de anúncio ou falhas de rede mantêm o placeholder seguro;
 - a escolha local não substitui, por si só, uma CMP certificada quando ela for exigida.
 
-## 15. Próxima fatia recomendada
+## 15. Próxima fatia aprovada
 
-**W08 — Onboarding e Ativação Controlada do AdSense**
+**W08 — Núcleo de Retenção e Desafio Diário**
 
-Objetivo recomendado: criar e aprovar a conta/site, obter IDs reais, configurar a solução de privacidade e mensagens do Google, validar `ads.txt`, testar no domínio publicado e ativar o kill switch sob autorização específica.
+Objetivo: transformar o catálogo atual em um ciclo de uso mensurável — desafio, resposta, pontuação, explicação e próximo desafio — antes de qualquer investimento em domínio ou ativação publicitária.
 
-A W08 não está autorizada por esta fatia.
+Prioridades aprovadas:
+
+- modo desafio com objetivo claro, cronômetro, resultado e continuação;
+- progressão por dificuldade e recorde local, sem cadastro obrigatório;
+- desafio diário determinístico;
+- resultado compartilhável por ação explícita;
+- explicação científica curta após a tentativa;
+- validação com usuários antes de retomar monetização.
+
+Domínio próprio, onboarding do AdSense, IDs reais, CMP, `ads.txt` e ativação do kill switch ficam adiados até evidência de retenção. A disponibilidade futura de um nome de domínio não é garantida.
 
 ## 16. Estado final
 
-**Pronto para revisão.** A branch ainda não foi integrada e o piloto permanece inativo sem configuração válida.
+**Aprovado para integração.** A arquitetura publicitária permanece preparada, reversível e desligada por padrão. Em 2026-09-09, o Product Owner decidiu priorizar qualidade, retenção e validação antes de assumir custos ou ativar publicidade.
 
 ## 17. Referências operacionais do provedor
 
