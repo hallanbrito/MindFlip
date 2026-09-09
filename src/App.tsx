@@ -9,6 +9,7 @@ import { BattleModal } from './components/BattleModal';
 import { AchievementsModal } from './components/AchievementsModal';
 import { SettingsModal } from './components/SettingsModal';
 import { LegalPagesModal } from './components/LegalPagesModal';
+import { AdConsentBanner } from './components/AdConsentBanner';
 
 import { Illusion, UserProgress, UserPreferences } from './types';
 import { ILLUSIONS_DATA } from './data/illusions';
@@ -264,6 +265,8 @@ export default function App() {
         onClose={() => setLegalOpen(false)}
         initialTab={legalInitialTab}
       />
+
+      <AdConsentBanner />
     </div>
   );
 }
