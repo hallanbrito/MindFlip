@@ -294,3 +294,9 @@ Uma integração só estará pronta para agir quando:
 O MindFlip adota uma arquitetura intermediada, reversível e com falha segura. Publicidade real não faz parte do núcleo das experiências e não pode ser condição para acesso aos desafios.
 
 Esta decisão substitui a ausência de arquitetura, mas não ativa monetização nem escolhe fornecedor.
+
+## 17. Implementação piloto da W07
+
+A W07 seleciona o Google AdSense como primeiro adaptador, restrito a anúncios não personalizados no posicionamento `between_challenges`. O piloto permanece desligado por padrão e falha fechado enquanto não existirem configuração válida, aprovação externa e escolha positiva do usuário.
+
+A seleção do adaptador não autoriza deployment nem substitui a configuração de privacidade e mensagens exigida pelo parceiro. IDs de publisher e slot são identificadores públicos; nenhum segredo é aceito no cliente.
