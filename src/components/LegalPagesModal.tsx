@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { X, ShieldCheck, FileText, Cookie, Info } from 'lucide-react';
 import { playClickTone } from '../utils/audio';
+import {
+  announceAdConsentChange,
+  clearAdConsent,
+  monetizationConfig
+} from '../utils/monetization';
 
 interface Props {
   isOpen: boolean;
@@ -131,6 +136,7 @@ export const LegalPagesModal: React.FC<Props> = ({
                 <li><strong>Sem Cadastro Obrigatório:</strong> Você pode usufruir de todas as 15 ilusões, modo laboratório e desafios diários sem necessidade de informar e-mail, telefone ou dados sensíveis.</li>
                 <li><strong>Eventos técnicos:</strong> Eventos de interação usados pela interface permanecem temporariamente na memória da página e não são enviados a um serviço externo de analytics.</li>
                 <li><strong>Compartilhamento:</strong> Ao escolher compartilhar um duelo, você envia voluntariamente o apelido, a ilusão e o tempo pelos aplicativos ou sites selecionados.</li>
+                <li><strong>Publicidade:</strong> O piloto permanece desligado sem configuração válida. Quando habilitado, o Google AdSense só é carregado após sua permissão e recebe uma solicitação de anúncio não personalizado.</li>
               </ul>
             </div>
           )}
@@ -142,8 +148,21 @@ export const LegalPagesModal: React.FC<Props> = ({
                 A versão atual não cria cookies próprios. Utilizamos <code>localStorage</code> para salvar preferências de acessibilidade, progresso e pontuação neste navegador.
               </p>
               <p className="mt-2 text-slate-400">
-                Os espaços de publicidade exibidos são apenas demonstrativos. Não há parceiro publicitário nem serviço externo de analytics integrado nesta versão.
+                Sem configuração válida, os espaços de publicidade permanecem demonstrativos. Quando o piloto for habilitado e você permitir anúncios, o Google AdSense poderá usar cookies ou tecnologias similares para frequência, relatórios agregados e prevenção de fraude, mesmo sem personalização.
               </p>
+              {monetizationConfig.enabled && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    clearAdConsent();
+                    announceAdConsentChange();
+                    window.location.reload();
+                  }}
+                  className="mt-3 rounded-xl border border-cyan-500/50 px-4 py-2 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/10"
+                >
+                  Revisar escolha de publicidade
+                </button>
+              )}
             </div>
           )}
 

@@ -1,4 +1,12 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  AD_CONSENT_CHANGED_EVENT,
+  canRequestAd,
+  ensureAdsenseScript,
+  loadAdConsent,
+  monetizationConfig,
+  requestAdsenseAd
+} from '../utils/monetization';
 
 interface AdSlotProps {
   placement: 'top' | 'inline' | 'between_challenges' | 'sidebar' | 'footer';
@@ -6,6 +14,40 @@ interface AdSlotProps {
 }
 
 export const AdSlot: React.FC<AdSlotProps> = ({ placement, className = '' }) => {
+  const [consent, setConsent] = useState(loadAdConsent);
+  const [failed, setFailed] = useState(false);
+  const requested = useRef(false);
+
+  useEffect(() => {
+    const syncConsent = () => {
+      requested.current = false;
+      setFailed(false);
+      setConsent(loadAdConsent());
+    };
+    window.addEventListener(AD_CONSENT_CHANGED_EVENT, syncConsent);
+    return () => window.removeEventListener(AD_CONSENT_CHANGED_EVENT, syncConsent);
+  }, []);
+
+  const isPilotPlacement = placement === 'between_challenges';
+  const canLoad = isPilotPlacement && canRequestAd(
+    monetizationConfig,
+    consent,
+    'between_challenges'
+  );
+
+  useEffect(() => {
+    if (!canLoad || requested.current) return;
+    requested.current = true;
+
+    ensureAdsenseScript(monetizationConfig)
+      .then(() => requestAdsenseAd())
+      .catch(() => setFailed(true));
+  }, [canLoad]);
+
+  // A monetização preparada não deve ocupar espaço nem competir com o produto.
+  // O slot só se torna visível após configuração válida e permissão explícita.
+  if (!canLoad && !failed) return null;
+
   // Pre-reserved dimensions to guarantee zero Cumulative Layout Shift (CLS = 0)
   const getDimensions = () => {
     switch (placement) {
@@ -23,6 +65,26 @@ export const AdSlot: React.FC<AdSlotProps> = ({ placement, className = '' }) => 
     }
   };
 
+  if (canLoad && !failed) {
+    return (
+      <aside
+        className={`my-3 mx-auto overflow-hidden rounded-xl ${getDimensions()} ${className}`}
+        aria-label="Publicidade do Google"
+      >
+        <p className="mb-1 text-center text-[10px] font-mono uppercase tracking-wider text-slate-500">
+          Publicidade
+        </p>
+        <ins
+          className="adsbygoogle block h-[80px] w-full"
+          data-ad-client={monetizationConfig.clientId}
+          data-ad-slot={monetizationConfig.slots.between_challenges}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
+      </aside>
+    );
+  }
+
   return (
     <div
       className={`my-3 mx-auto flex flex-col items-center justify-center rounded-xl bg-[#0d101a]/70 border border-dashed border-slate-800 text-slate-500 overflow-hidden relative ${getDimensions()} ${className}`}
@@ -31,15 +93,15 @@ export const AdSlot: React.FC<AdSlotProps> = ({ placement, className = '' }) => 
     >
       <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-slate-500">
         <span className="w-1.5 h-1.5 rounded-full bg-slate-600" />
-        <span>Espaço Patrocinado</span>
+        <span>Espaço de Publicidade</span>
       </div>
 
       <p className="text-xs text-slate-400 font-medium mt-1">
-        Apoie o MindFlip mantendo os desafios 100% gratuitos
+        Publicidade indisponível no momento
       </p>
 
       <span className="text-[10px] text-slate-600 mt-0.5">
-        Sem anúncios invasivos • Respeito à sua privacidade
+        Nunca interrompe seus desafios
       </span>
     </div>
   );

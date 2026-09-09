@@ -41,6 +41,12 @@ bun test
 bun run build
 ~~~
 
+## Piloto de monetização
+
+O adaptador piloto do Google AdSense é opcional e permanece desligado por padrão. Depois da aprovação da conta e do site, copie `.env.example` para o ambiente de publicação, substitua os identificadores públicos e habilite `VITE_ADSENSE_ENABLED=true`.
+
+O piloto usa apenas o posicionamento `between_challenges`, solicita anúncios não personalizados e só carrega o provedor após escolha positiva do usuário. A configuração de privacidade e mensagens do AdSense deve ser concluída antes da ativação pública.
+
 ## Nome canônico
 
 **MindFlip** é o nome oficial do produto e do projeto. Referências históricas a outros nomes não definem a identidade atual.
