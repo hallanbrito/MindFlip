@@ -1,19 +1,19 @@
 # MindFlip
 
-Laboratório interativo de percepção humana com ilusões visuais, microdesafios e explicações científicas acessíveis.
+Laboratório interativo de percepção humana com ilusões visuais, microdesafios e explicações científicas acessíveis. Foi criado para despertar curiosidade sobre como interpretamos o que vemos.
 
-O MindFlip combina entretenimento rápido, curiosidade científica, acessibilidade e monetização ética. As experiências são lúdicas e educacionais: não constituem avaliação médica, oftalmológica ou neurocognitiva.
+## Em 30 segundos
 
-## Estado do projeto
+- **Experiência:** explore ilusões e desafios visuais, acompanhe seu progresso no navegador e leia explicações acessíveis.
+- **Tecnologias:** React, TypeScript e Vite, com testes automatizados para regras específicas.
+- **Estado:** prova de conceito com a [W07 (piloto publicitário)](docs/worklogs/W07-INTEGRACAO-PUBLICITARIA-PILOTO.md) integrada e desligada por padrão. A W08 de retenção e desafio diário está planejada; não é uma entrega deste repositório.
+- **Aprendizado demonstrado:** construção de interface interativa, persistência local, atenção à acessibilidade e separação entre experiência, conteúdo e configuração opcional.
 
-O repositório contém uma prova de conceito em React, TypeScript e Vite. A evolução do produto é conduzida em **Fatias W** pelo Método C.H. (ChatGPT–Hallan / Colaboração Híbrida), usando o ciclo operacional **CHAVE**: Contextualizar, Harmonizar, Agir, Verificar e Evoluir.
+As experiências são lúdicas e educacionais; não constituem avaliação médica, oftalmológica ou neurocognitiva.
 
-A documentação normativa começa em:
+## Estado e decisões do projeto
 
-1. [Fundação C.H.](docs/00-FUNDACAO-CH.md)
-2. [Regras para agentes e colaboradores](AGENTS.md)
-3. [Registro da W01](docs/worklogs/W01-FUNDACAO-CH.md)
-4. [Arquitetura de Monetização Ética](docs/01-ARQUITETURA-MONETIZACAO.md)
+A evolução ocorre em **Fatias W** pelo Método C.H. (ChatGPT–Hallan / Colaboração Híbrida). Para aprofundar, consulte a [Fundação C.H.](docs/00-FUNDACAO-CH.md), as [regras de colaboração](AGENTS.md), o [registro da W07](docs/worklogs/W07-INTEGRACAO-PUBLICITARIA-PILOTO.md) e a [arquitetura de monetização ética](docs/01-ARQUITETURA-MONETIZACAO.md).
 
 ## Princípios do produto
 
@@ -36,9 +36,9 @@ bun run dev
 Verificações disponíveis:
 
 ~~~bash
-bun run lint
-bun test
-bun run build
+bun run lint   # checagem de tipos (tsc --noEmit)
+bun test       # testes automatizados
+bun run build  # build de produção
 ~~~
 
 ## Piloto de monetização
