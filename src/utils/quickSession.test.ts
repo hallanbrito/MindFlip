@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import type { Illusion } from '../types.ts';
+import type { Illusion, UserProgress, ChallengeAttempt } from '../types.ts';
 import {
   QUICK_SESSION_SIZE,
   createQuickSession,
@@ -14,6 +14,7 @@ import {
   calculateSessionSummary,
   restartQuickSession
 } from './quickSession.ts';
+import { INITIAL_PROGRESS, recordAttempt } from './storage.ts';
 
 const MOCK_CATALOG: Illusion[] = Array.from({ length: 10 }, (_, i) => ({
   id: `illusion-${i + 1}`,
@@ -264,4 +265,155 @@ test('restartQuickSession increments sessionNumber and resets state cleanly for 
   assert.equal(canAdvanceSession(restarted), false);
   // Next rotation took challenges 6-10
   assert.equal(restarted.illusions[0].id, 'illusion-6');
+});
+
+test('demonstrates absence of active intervals after unmount, challenge change or early exit', () => {
+  const activeIntervals = new Set<number>();
+  let nextId = 1;
+
+  const customSetInterval = () => {
+    const id = nextId++;
+    activeIntervals.add(id);
+    return id;
+  };
+
+  const customClearInterval = (id: number | null) => {
+    if (id !== null) {
+      activeIntervals.delete(id);
+    }
+  };
+
+  // Mimics ChallengeCard clearActiveTimer / useEffect cleanup
+  let timerRef: number | null = null;
+  const clearActiveTimer = () => {
+    if (timerRef !== null) {
+      customClearInterval(timerRef);
+      timerRef = null;
+    }
+  };
+
+  const startTimer = () => {
+    clearActiveTimer();
+    timerRef = customSetInterval();
+  };
+
+  // 1. Start timer during challenge 1
+  startTimer();
+  assert.equal(activeIntervals.size, 1);
+  assert.notEqual(timerRef, null);
+
+  // 2. Change of challenge: cleanup runs before next challenge
+  clearActiveTimer();
+  assert.equal(activeIntervals.size, 0);
+  assert.equal(timerRef, null);
+
+  // 3. Start timer during challenge 2
+  startTimer();
+  assert.equal(activeIntervals.size, 1);
+
+  // 4. Early session exit: unmount cleanup runs
+  clearActiveTimer();
+  assert.equal(activeIntervals.size, 0);
+  assert.equal(timerRef, null);
+
+  // 5. Normal completion / solved state
+  startTimer();
+  assert.equal(activeIntervals.size, 1);
+  clearActiveTimer();
+  assert.equal(activeIntervals.size, 0);
+  assert.equal(timerRef, null);
+});
+
+test('integration test: repeat and scoring flow prevents mentalScore duplication in session while preserving catalog mode', () => {
+  let userProgress: UserProgress = { ...INITIAL_PROGRESS, mentalScore: 100 };
+  let session = createQuickSession(MOCK_CATALOG);
+
+  const simulateComplete = (index: number, timeElapsed = 4.2) => {
+    const isAlreadyCompleted = isChallengeCompletedInSession(session, index);
+    const points = timeElapsed > 0 && timeElapsed < 5 ? 120 : 80;
+    const attempt: ChallengeAttempt = {
+      illusionId: session.illusions[index].id,
+      timestamp: Date.now(),
+      timeElapsed,
+      completed: true,
+      flipped: true,
+      scoreEarned: points
+    };
+
+    if (!isAlreadyCompleted) {
+      const { updated } = recordAttempt(userProgress, attempt);
+      userProgress = updated;
+      session = recordSessionChallengeCompletion(session, index, {
+        illusionId: attempt.illusionId,
+        scoreEarned: points + 50,
+        timeElapsed: attempt.timeElapsed
+      });
+    }
+  };
+
+  // 1. Solve challenge 0 for the first time
+  simulateComplete(0, 3.5); // +170 points
+  assert.equal(userProgress.mentalScore, 270);
+  assert.equal(userProgress.history.length, 1);
+  assert.equal(session.results[0].scoreEarned, 170);
+
+  // 2. User clicks "Tentar de Novo" and repeats challenge 0 in the session
+  simulateComplete(0, 2.1);
+  // Assert mentalScore is NOT duplicated and history is NOT duplicated
+  assert.equal(userProgress.mentalScore, 270);
+  assert.equal(userProgress.history.length, 1);
+  assert.equal(session.results[0].scoreEarned, 170);
+
+  // 3. Premature advance to challenge 2 is blocked (challenge 1 not solved)
+  session = advanceSession(session); // moves to 1
+  assert.equal(session.currentIndex, 1);
+  assert.equal(canAdvanceSession(session), false);
+  assert.equal(advanceSession(session).currentIndex, 1);
+
+  // 4. Solve challenge 1
+  simulateComplete(1, 4.0); // +170 points
+  assert.equal(userProgress.mentalScore, 440);
+  assert.equal(userProgress.history.length, 2);
+
+  // 5. User navigates back to challenge 0 and solves again while revisiting
+  session = previousSessionChallenge(session);
+  assert.equal(session.currentIndex, 0);
+  simulateComplete(0, 1.5);
+  // Score remains 440 (no duplication)
+  assert.equal(userProgress.mentalScore, 440);
+  assert.equal(userProgress.history.length, 2);
+
+  // 6. Complete remaining challenges 2, 3, 4
+  session = advanceSession(session); // to 1
+  session = advanceSession(session); // to 2
+  simulateComplete(2, 6.0); // +130
+  session = advanceSession(session); // to 3
+  simulateComplete(3, 7.0); // +130
+  session = advanceSession(session); // to 4
+  simulateComplete(4, 3.0); // +170
+
+  assert.equal(userProgress.mentalScore, 440 + 130 + 130 + 170); // 870
+  assert.equal(userProgress.history.length, 5);
+
+  // Conclude session
+  session = advanceSession(session);
+  assert.equal(session.isCompleted, true);
+
+  const summary = calculateSessionSummary(session);
+  assert.equal(summary.totalCompleted, 5);
+  assert.equal(summary.totalScore, 170 + 170 + 130 + 130 + 170); // 770
+  assert.equal(summary.bestTime, 3.0);
+
+  // 7. Restart session cleanly ("Jogar novamente")
+  session = restartQuickSession(MOCK_CATALOG, session);
+  assert.equal(session.isActive, true);
+  assert.equal(session.sessionNumber, 2);
+  assert.equal(session.currentIndex, 0);
+  assert.deepEqual(session.results, {});
+  // In session 2, challenge 0 is fresh and can award session score
+  assert.equal(shouldAwardSessionScore(session, 0), true);
+
+  // 8. Catalog mode preservation (outside session)
+  const inactiveSession = { ...session, isActive: false };
+  assert.equal(shouldAwardSessionScore(inactiveSession, 0), true);
 });

@@ -61,7 +61,14 @@ export const ChallengeCard: React.FC<Props> = ({
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  // Reset state when illusion or session context changes
+  const clearActiveTimer = () => {
+    if (timerRef.current !== null) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  // Reset state and clear timer when illusion or session context changes, and on unmount
   useEffect(() => {
     setPhase('intro');
     setSelectedInitialChoice(null);
@@ -69,14 +76,25 @@ export const ChallengeCard: React.FC<Props> = ({
     setTimerRunning(false);
     setRevealedTipIndex(0);
     setExplanationTab('quick');
-    if (timerRef.current) clearInterval(timerRef.current);
+    clearActiveTimer();
 
     trackEvent('challenge_view', {
       illusionId: illusion.id,
       title: illusion.title,
       category: illusion.category
     });
+
+    return () => {
+      clearActiveTimer();
+    };
   }, [illusion.id, sessionContextKey]);
+
+  // Dedicated unmount cleanup guarantee (e.g. early exit from session or navigation)
+  useEffect(() => {
+    return () => {
+      clearActiveTimer();
+    };
+  }, []);
 
   // Progressive tip auto-reveal timer during timing phase
   useEffect(() => {
@@ -103,7 +121,7 @@ export const ChallengeCard: React.FC<Props> = ({
       initialChoice: selectedInitialChoice
     });
 
-    if (timerRef.current) clearInterval(timerRef.current);
+    clearActiveTimer();
     timerRef.current = window.setInterval(() => {
       const elapsed = (performance.now() - startTimeRef.current) / 1000;
       setTimerSeconds(elapsed);
@@ -111,10 +129,7 @@ export const ChallengeCard: React.FC<Props> = ({
   };
 
   const handleCompleteSuccess = () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
+    clearActiveTimer();
     setTimerRunning(false);
     setPhase('solved');
 
@@ -372,6 +387,9 @@ export const ChallengeCard: React.FC<Props> = ({
                   type="button"
                   onClick={() => {
                     playClickTone();
+                    clearActiveTimer();
+                    setTimerRunning(false);
+                    setTimerSeconds(0);
                     setPhase('intro');
                   }}
                   className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs flex items-center gap-1.5 border border-slate-700 transition-all"

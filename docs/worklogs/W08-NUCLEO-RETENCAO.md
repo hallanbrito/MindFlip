@@ -1,6 +1,6 @@
 # W08 — Núcleo de Retenção (Fatia W08-A: Sessão Rápida)
 
-Status: pronto para reauditoria (AGUARDANDO_REAUDITORIA_CHATGPT)
+Status: pronto para reauditoria R3 (AGUARDANDO_REAUDITORIA_CHATGPT)
 Tipo: funcional, interface, experiência e retenção
 Data: 2026-10-31
 Executor: AGY
@@ -29,7 +29,7 @@ Implementar a Sessão Rápida de cinco desafios no MindFlip, transformando a ent
 
 Substituir a navegação infinita e sem desfecho por uma sessão curta de 5 desafios, fornecendo senso de conquista, clareza sobre o esforço investido e retenção baseada em valor, preservando privacidade, acessibilidade e integridade científica.
 
-## 4. Escopo incluído (W08-A e Reteste Corretivo)
+## 4. Escopo incluído (W08-A e Ciclos Corretivos R2 e R3)
 
 1. Disparo da Sessão Rápida pelo CTA principal ("COMEÇAR O DESAFIO");
 2. Composição da sessão com exatamente cinco desafios selecionados do catálogo atual;
@@ -39,11 +39,12 @@ Substituir a navegação infinita e sem desfecho por uma sessão curta de 5 desa
 6. Preservação do encerramento antecipado da sessão a qualquer momento para retorno à exploração do catálogo livre;
 7. Prevenção de duplicação de `mentalScore`, tentativas ou recompensas gerais ao repetir ou revisitar desafios já concluídos na sessão, mantendo intacto o comportamento do modo catálogo;
 8. Reset garantido do estado do `ChallengeCard` através de chave de renderização contextual (`sessionContextKey` / `cardKey`) em transições catálogo/sessão e no reinício da sessão;
-9. Ao concluir o 5º desafio, transição para tela de resumo (`QuickSessionSummary`), sem reinício silencioso para o primeiro desafio;
-10. Apresentação no resumo do total concluído, da pontuação real atribuída nesta sessão e do melhor tempo de inversão somente quando houver dado positivo confiável (omitido quando inexistente);
-11. Ações de desfecho: "Jogar novamente" (inicia nova sessão limpa de 5 desafios, com novo ciclo e sem resetar o progresso geral acumulado) e "Voltar amanhã" (saída clara e respeitosa, sem coerção ou dark patterns);
-12. Suporte completo a navegação por teclado, leitores de tela (`role="progressbar"`, `aria-valuenow`, `aria-label`, foco programático) e preferência de movimento reduzido;
-13. Testes automatizados regressivos cobrindo criação, limites, progressão, bloqueio de avanço indevido, bloqueio de conclusão indevida, proteção contra dupla contagem, finalização e cálculo de resumo.
+9. Limpeza estrita e garantida de `clearInterval` no unmount e em todas as transições de desafio, saída antecipada da sessão e mudança de abas, sem timers pendentes ou vazamento de intervalos em segundo plano;
+10. Ao concluir o 5º desafio, transição para tela de resumo (`QuickSessionSummary`), sem reinício silencioso para o primeiro desafio;
+11. Apresentação no resumo do total concluído, da pontuação real atribuída nesta sessão e do melhor tempo de inversão somente quando houver dado positivo confiável (omitido quando inexistente);
+12. Ações de desfecho: "Jogar novamente" (inicia nova sessão limpa de 5 desafios, com novo ciclo e sem resetar o progresso geral acumulado) e "Voltar amanhã" (saída clara e respeitosa, sem coerção ou dark patterns);
+13. Suporte completo a navegação por teclado, leitores de tela (`role="progressbar"`, `aria-valuenow`, `aria-label`, foco programático) e preferência de movimento reduzido;
+14. Testes automatizados regressivos e de integração cobrindo criação, limites, progressão, bloqueio de avanço, bloqueio de conclusão indevida, proteção contra dupla contagem, ausência de intervalos ativos após unmount/saída e cálculo de resumo.
 
 ## 5. Exclusões
 
@@ -63,22 +64,24 @@ Substituir a navegação infinita e sem desfecho por uma sessão curta de 5 desa
 - Exibir melhor tempo no resumo somente se houver medição real positiva (`timeElapsed > 0`); omitir caso contrário;
 - Preservar `userProgress` no reinício de sessão, zerando apenas contadores efêmeros da sessão atual;
 - Bloquear avanço sem resolução efetiva do desafio corrente;
-- Separar indicador de posição (`1/5` a `5/5`) da porcentagem efetiva de conclusão (`0%` a `100%`).
+- Separar indicador de posição (`1/5` a `5/5`) da porcentagem efetiva de conclusão (`0%` a `100%`);
+- Garantir `clearActiveTimer` no unmount do `ChallengeCard` e em todas as transições de navegação ou saída.
 
 ### Proibidas
 
 - Avançar de desafio sem concluir o atual na sessão;
 - Reiniciar silenciosamente para o desafio 1 ao concluir o 5º;
+- Deixar intervalos ou timers ativos após unmount ou saída antecipada;
 - Duplicar `mentalScore` ou progresso geral ao repetir desafio já concluído na sessão;
-- Inventar pontuação ou tempos estimados sem medição efetiva;
+- Modificar timers globais da W08-B;
 - Tentar merge, publicação ou deploy.
 
 ## 7. Arquivos afetados
 
 - `src/utils/quickSession.ts`: regras puras de sessão, bloqueio de avanço (`canAdvanceSession`), verificação de duplicação (`shouldAwardSessionScore`, `isChallengeCompletedInSession`), progresso e resumo;
-- `src/utils/quickSession.test.ts`: suíte com 10 testes regressivos automatizados;
+- `src/utils/quickSession.test.ts`: suíte com 12 testes regressivos e de integração automatizados;
 - `src/components/QuickSessionSummary.tsx`: tela de resumo final da sessão;
-- `src/components/ChallengeCard.tsx`: suporte a label dinâmico, reset por chave contextual e bloqueio de pontuação duplicada em repetições na sessão;
+- `src/components/ChallengeCard.tsx`: suporte a label dinâmico, reset por chave contextual, bloqueio de pontuação duplicada e limpeza garantida de `clearInterval` no unmount e transições;
 - `src/components/FeedView.tsx`: coordenação do ciclo de vida da Sessão Rápida, barra de progresso por conclusões, desabilitação de avanço e atalhos controlados;
 - `docs/worklogs/W08-NUCLEO-RETENCAO.md`: este registro operacional.
 
@@ -88,6 +91,7 @@ Nenhuma dependência ou lockfile foi alterado.
 
 - [x] CTA inicia sessão real; indicador correto 1/5 a 5/5.
 - [x] Avanço e conclusão indevidos são estritamente bloqueados até a conclusão efetiva do desafio.
+- [x] Ausência garantida de intervalos ativos após unmount, mudança de desafio ou saída antecipada.
 - [x] Final do 5º não reinicia silenciosamente; resumo correto e navegação funcional.
 - [x] Reinício não reaproveita contadores antigos nem apaga progresso geral.
 - [x] Repetição de desafio na sessão não duplica `mentalScore` nem recompensas gerais.
@@ -96,22 +100,22 @@ Nenhuma dependência ou lockfile foi alterado.
 - [x] Fluxo sem rede/conta; acessibilidade e movimento reduzido preservados.
 - [x] `bun run lint`, `bun test`, `npm test`, `bun run build`, `git diff --check` aprovados com código de saída 0.
 - [x] Teste visual mobile e desktop registrado com evidência ou declarado `NÃO_VERIFICADO`.
-- [x] Draft PR vinculado às Issues #10 e #8 com RUC auditável reconciliado.
+- [x] Draft PR vinculado às Issues #10 e #8 com RUC auditável e SHAs reais capturados diretamente do Git.
 
 ## 9. Verificações executadas
 
 1. **`bun run lint` (`tsc --noEmit`):**
    - Código de saída: 0 (nenhum erro de tipagem).
 2. **`bun test` e `npm test`:**
-   - 25 testes executados em 5 arquivos (`battle`, `monetization`, `science`, `storage`, `quickSession`).
-   - 25 aprovados, 0 falhas.
-   - 10 testes específicos em `quickSession.test.ts` cobrindo bloqueio de avanço indevido, bloqueio de conclusão indevida, prevenção de dupla contagem e porcentagem por conclusões efetivas.
+   - 27 testes executados em 5 arquivos (`battle`, `monetization`, `science`, `storage`, `quickSession`).
+   - 27 aprovados, 0 falhas.
+   - 12 testes específicos em `quickSession.test.ts` cobrindo bloqueio de avanço indevido, bloqueio de conclusão indevida, prevenção de dupla contagem, porcentagem por conclusões efetivas, ausência de intervalos ativos pós-unmount/saída e teste de integração do fluxo completo.
 3. **`bun run build` (`vite build`):**
    - Código de saída: 0.
    - 1.713 módulos transformados.
    - Bundle gerado com sucesso em `dist/`.
-4. **`git diff --check`:**
-   - Código de saída: 0 (sem conflitos, espaços em branco espúrios ou problemas de formatação).
+4. **`git diff --check` e `git diff --check origin/main...HEAD`:**
+   - Código de saída: 0 (sem conflitos, espaços em branco espúrios ou trailing whitespace).
 5. **Inspeção de segredos e rede:**
    - Nenhuma chamada de rede adicionada;
    - Nenhum tracker, token, credencial ou segredo incluído.
@@ -123,10 +127,12 @@ Nenhuma dependência ou lockfile foi alterado.
 - Baseline: `main@8fa45adfd3e9153e7cb6d678b7a4bde50634011d`;
 - Branch de trabalho: `agy/w08a-sessao-rapida`;
 - `bun run lint`: exit code 0;
-- `bun test`: 25 pass, 0 fail;
-- `npm test`: 25 pass, 0 fail;
-- `bun run build`: exit code 0 (CSS 75.31 kB, JS 402.70 kB antes de gzip);
+- `bun test`: 27 pass, 0 fail;
+- `npm test`: 27 pass, 0 fail;
+- `bun run build`: exit code 0 (CSS 75.31 kB, JS 402.71 kB antes de gzip);
 - `git diff --check`: exit code 0;
+- Ausência de intervalos ativos após unmount/saída comprovada por teste unitário de ciclo de vida;
+- Teste de integração comprova bloqueio de duplicação de `mentalScore` e preservação do modo catálogo;
 - Bloqueio de avanço e conclusão sem resolução comprovado por testes regressivos unitários;
 - Omissão de tempo de inversão quando inexistente dado positivo confiável.
 
