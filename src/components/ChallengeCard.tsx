@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { Illusion, UserProgress } from '../types';
+import { Illusion, UserProgress, ChallengeAttempt } from '../types';
 import { IllusionEngine } from './illusions/IllusionEngine';
 import { getScientificReferences } from '../data/scientificReferences';
 import { playClickTone, playFlipWhoosh, playSuccessTone } from '../utils/audio';
@@ -27,6 +27,11 @@ interface Props {
   onNextChallenge: () => void;
   onChallengeFriend: (illusion: Illusion, timeElapsed?: number) => void;
   reducedMotion?: boolean;
+  isLastInSession?: boolean;
+  nextButtonLabel?: string;
+  isAlreadyCompletedInSession?: boolean;
+  sessionContextKey?: string;
+  onAttemptCompleted?: (attempt: ChallengeAttempt, scoreAwarded: number) => void;
 }
 
 export const ChallengeCard: React.FC<Props> = ({
@@ -35,7 +40,12 @@ export const ChallengeCard: React.FC<Props> = ({
   onProgressUpdate,
   onNextChallenge,
   onChallengeFriend,
-  reducedMotion = false
+  reducedMotion = false,
+  isLastInSession = false,
+  nextButtonLabel,
+  isAlreadyCompletedInSession = false,
+  sessionContextKey,
+  onAttemptCompleted
 }) => {
   // Interaction phase:
   // 'intro' -> user answers initial question or looks at illusion
@@ -51,7 +61,14 @@ export const ChallengeCard: React.FC<Props> = ({
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  // Reset state when illusion changes
+  const clearActiveTimer = () => {
+    if (timerRef.current !== null) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  // Reset state and clear timer when illusion or session context changes, and on unmount
   useEffect(() => {
     setPhase('intro');
     setSelectedInitialChoice(null);
@@ -59,14 +76,25 @@ export const ChallengeCard: React.FC<Props> = ({
     setTimerRunning(false);
     setRevealedTipIndex(0);
     setExplanationTab('quick');
-    if (timerRef.current) clearInterval(timerRef.current);
+    clearActiveTimer();
 
     trackEvent('challenge_view', {
       illusionId: illusion.id,
       title: illusion.title,
       category: illusion.category
     });
-  }, [illusion.id]);
+
+    return () => {
+      clearActiveTimer();
+    };
+  }, [illusion.id, sessionContextKey]);
+
+  // Dedicated unmount cleanup guarantee (e.g. early exit from session or navigation)
+  useEffect(() => {
+    return () => {
+      clearActiveTimer();
+    };
+  }, []);
 
   // Progressive tip auto-reveal timer during timing phase
   useEffect(() => {
@@ -93,7 +121,7 @@ export const ChallengeCard: React.FC<Props> = ({
       initialChoice: selectedInitialChoice
     });
 
-    if (timerRef.current) clearInterval(timerRef.current);
+    clearActiveTimer();
     timerRef.current = window.setInterval(() => {
       const elapsed = (performance.now() - startTimeRef.current) / 1000;
       setTimerSeconds(elapsed);
@@ -101,10 +129,7 @@ export const ChallengeCard: React.FC<Props> = ({
   };
 
   const handleCompleteSuccess = () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
+    clearActiveTimer();
     setTimerRunning(false);
     setPhase('solved');
 
@@ -124,9 +149,9 @@ export const ChallengeCard: React.FC<Props> = ({
       } catch {}
     }
 
-    // Save attempt to user progress
+    // Save attempt to user progress unless already accounted for in session
     const points = finalTime > 0 && finalTime < 5 ? 120 : 80;
-    const { updated } = recordAttempt(userProgress, {
+    const attempt: ChallengeAttempt = {
       illusionId: illusion.id,
       timestamp: Date.now(),
       timeElapsed: finalTime,
@@ -134,9 +159,16 @@ export const ChallengeCard: React.FC<Props> = ({
       initialPerception: selectedInitialChoice || undefined,
       flipped: true,
       scoreEarned: points
-    });
+    };
 
-    onProgressUpdate(updated);
+    if (isAlreadyCompletedInSession) {
+      // Repetition/revisit in session: do not duplicate mentalScore or general rewards
+      onAttemptCompleted?.(attempt, 0);
+    } else {
+      const { updated } = recordAttempt(userProgress, attempt);
+      onProgressUpdate(updated);
+      onAttemptCompleted?.(attempt, points + 50);
+    }
 
     trackEvent('challenge_completed', {
       illusionId: illusion.id,
@@ -334,6 +366,12 @@ export const ChallengeCard: React.FC<Props> = ({
                   : 'Você relatou uma mudança na sua percepção da imagem.'}
               </p>
 
+              {isAlreadyCompletedInSession && (
+                <p className="text-[11px] text-amber-300/90 mt-2 font-medium">
+                  Desafio já contabilizado nesta sessão (sem pontuação duplicada).
+                </p>
+              )}
+
               {/* Action row: Share + Retry */}
               <div className="flex items-center justify-center gap-2 mt-3">
                 <button
@@ -349,6 +387,9 @@ export const ChallengeCard: React.FC<Props> = ({
                   type="button"
                   onClick={() => {
                     playClickTone();
+                    clearActiveTimer();
+                    setTimerRunning(false);
+                    setTimerSeconds(0);
                     setPhase('intro');
                   }}
                   className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs flex items-center gap-1.5 border border-slate-700 transition-all"
@@ -446,7 +487,9 @@ export const ChallengeCard: React.FC<Props> = ({
             {/* Next Challenge CTA */}
             <div className="w-full flex flex-col items-center">
               <span className="text-[11px] text-slate-400 mb-2 font-medium">
-                O próximo desafio costuma surpreender os olhos...
+                {isLastInSession
+                  ? 'Você concluiu os 5 desafios da sua sessão rápida!'
+                  : 'O próximo desafio costuma surpreender os olhos...'}
               </span>
               <button
                 type="button"
@@ -454,9 +497,9 @@ export const ChallengeCard: React.FC<Props> = ({
                   playClickTone();
                   onNextChallenge();
                 }}
-                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:brightness-110 active:scale-98 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition-all uppercase tracking-wide"
+                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:brightness-110 active:scale-98 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition-all uppercase tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
               >
-                <span>PRÓXIMO DESAFIO</span>
+                <span>{nextButtonLabel || (isLastInSession ? 'CONCLUIR SESSÃO' : 'PRÓXIMO DESAFIO')}</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
