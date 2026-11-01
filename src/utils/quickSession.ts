@@ -23,7 +23,9 @@ export interface QuickSessionProgress {
   currentStep: number;
   completedCount: number;
   remainingCount: number;
-  percentage: number;
+  completionPercentage: number;
+  isCurrentChallengeCompleted: boolean;
+  canAdvance: boolean;
   isLastChallenge: boolean;
   formattedStep: string;
 }
@@ -80,7 +82,35 @@ export function createQuickSession(
 }
 
 /**
+ * Checks whether the challenge at the current index has been completed.
+ */
+export function isChallengeCompletedInSession(session: QuickSessionState, index: number): boolean {
+  return Boolean(session.results[index]?.completed);
+}
+
+/**
+ * Determines whether a challenge can award general and session scores.
+ * Returns true if the challenge at `index` has NOT been accounted for yet in this session.
+ * Prevents duplicating mentalScore or bonus points on repeated attempts within the session.
+ */
+export function shouldAwardSessionScore(session: QuickSessionState, index: number): boolean {
+  if (!session.isActive) return true;
+  return !isChallengeCompletedInSession(session, index);
+}
+
+/**
+ * Checks if the user is allowed to advance or conclude the session.
+ * Advancement is strictly blocked unless the challenge at the current index has been completed.
+ */
+export function canAdvanceSession(session: QuickSessionState): boolean {
+  if (!session.isActive || session.illusions.length === 0) return false;
+  return isChallengeCompletedInSession(session, session.currentIndex);
+}
+
+/**
  * Calculates current progression numbers and accessible labels.
+ * Percentage is calculated strictly from effective completions (completedCount / total),
+ * while currentStep (1/5 to 5/5) tracks navigation position separately.
  */
 export function getSessionProgress(session: QuickSessionState): QuickSessionProgress {
   const total = session.illusions.length;
@@ -90,7 +120,9 @@ export function getSessionProgress(session: QuickSessionState): QuickSessionProg
       currentStep: 0,
       completedCount: 0,
       remainingCount: 0,
-      percentage: 0,
+      completionPercentage: 0,
+      isCurrentChallengeCompleted: false,
+      canAdvance: false,
       isLastChallenge: false,
       formattedStep: '0/0'
     };
@@ -99,7 +131,9 @@ export function getSessionProgress(session: QuickSessionState): QuickSessionProg
   const currentStep = Math.min(session.currentIndex + 1, total);
   const completedCount = Object.values(session.results).filter(r => r && r.completed).length;
   const remainingCount = Math.max(0, total - completedCount);
-  const percentage = Math.round((currentStep / total) * 100);
+  const completionPercentage = Math.round((completedCount / total) * 100);
+  const isCurrentChallengeCompleted = isChallengeCompletedInSession(session, session.currentIndex);
+  const canAdvance = isCurrentChallengeCompleted;
   const isLastChallenge = session.currentIndex === total - 1;
 
   return {
@@ -107,7 +141,9 @@ export function getSessionProgress(session: QuickSessionState): QuickSessionProg
     currentStep,
     completedCount,
     remainingCount,
-    percentage,
+    completionPercentage,
+    isCurrentChallengeCompleted,
+    canAdvance,
     isLastChallenge,
     formattedStep: `${currentStep}/${total}`
   };
@@ -116,7 +152,7 @@ export function getSessionProgress(session: QuickSessionState): QuickSessionProg
 /**
  * Records the completion of a challenge in the session.
  * Prevents double-counting: if the challenge at this index was already completed,
- * it keeps the first recorded score.
+ * it preserves the first recorded score.
  */
 export function recordSessionChallengeCompletion(
   session: QuickSessionState,
@@ -160,12 +196,18 @@ export function recordSessionChallengeCompletion(
 
 /**
  * Advances to the next challenge in the session.
- * If already at the last challenge (e.g. 5/5), sets `isCompleted = true`
+ * Advancement and conclusion are strictly blocked if the current challenge has not been completed.
+ * If already at the last challenge (e.g. 5/5) and completed, sets `isCompleted = true`
  * and DOES NOT loop back to the first challenge.
  */
 export function advanceSession(session: QuickSessionState): QuickSessionState {
   const total = session.illusions.length;
-  if (total === 0) return session;
+  if (total === 0 || !session.isActive) return session;
+
+  // Block advancement and conclusion if current challenge is not effectively completed
+  if (!canAdvanceSession(session)) {
+    return session;
+  }
 
   if (session.currentIndex >= total - 1) {
     return {

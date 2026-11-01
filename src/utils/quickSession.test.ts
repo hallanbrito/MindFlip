@@ -6,8 +6,11 @@ import {
   createQuickSession,
   getSessionProgress,
   recordSessionChallengeCompletion,
+  canAdvanceSession,
   advanceSession,
   previousSessionChallenge,
+  shouldAwardSessionScore,
+  isChallengeCompletedInSession,
   calculateSessionSummary,
   restartQuickSession
 } from './quickSession.ts';
@@ -36,6 +39,7 @@ test('creates quick session with exactly 5 challenges and clean initial state', 
   assert.equal(session.currentIndex, 0);
   assert.equal(session.illusions.length, QUICK_SESSION_SIZE);
   assert.equal(session.isCompleted, false);
+  assert.equal(session.sessionNumber, 1);
   assert.deepEqual(session.results, {});
   assert.equal(session.illusions[0].id, 'illusion-1');
   assert.equal(session.illusions[4].id, 'illusion-5');
@@ -52,19 +56,20 @@ test('handles empty or invalid catalog safely', () => {
   assert.equal(invalidSession.illusions.length, 0);
 });
 
-test('reports progress from 1/5 to 5/5 with completed and remaining count', () => {
+test('calculates progress percentage strictly by completions while keeping position 1/5 to 5/5 separate', () => {
   let session = createQuickSession(MOCK_CATALOG);
 
-  // Initial step: 1/5, 0 completed, 5 remaining
+  // Initial step: position 1/5, but 0 completed (0% progress)
   let progress = getSessionProgress(session);
   assert.equal(progress.currentStep, 1);
   assert.equal(progress.total, 5);
   assert.equal(progress.completedCount, 0);
   assert.equal(progress.remainingCount, 5);
+  assert.equal(progress.completionPercentage, 0);
   assert.equal(progress.formattedStep, '1/5');
-  assert.equal(progress.isLastChallenge, false);
+  assert.equal(progress.canAdvance, false);
 
-  // Complete first challenge
+  // Complete first challenge: still at position 1/5, but now 1 completed (20% progress)
   session = recordSessionChallengeCompletion(session, 0, {
     illusionId: session.illusions[0].id,
     scoreEarned: 130,
@@ -72,23 +77,101 @@ test('reports progress from 1/5 to 5/5 with completed and remaining count', () =
   });
 
   progress = getSessionProgress(session);
+  assert.equal(progress.currentStep, 1);
   assert.equal(progress.completedCount, 1);
   assert.equal(progress.remainingCount, 4);
+  assert.equal(progress.completionPercentage, 20);
+  assert.equal(progress.canAdvance, true);
 
-  // Advance to step 5/5
-  session = advanceSession(session); // to index 1 (2/5)
-  session = advanceSession(session); // to index 2 (3/5)
-  session = advanceSession(session); // to index 3 (4/5)
-  session = advanceSession(session); // to index 4 (5/5)
-
+  // Advance to position 2/5
+  session = advanceSession(session);
   progress = getSessionProgress(session);
-  assert.equal(progress.currentStep, 5);
-  assert.equal(progress.isLastChallenge, true);
-  assert.equal(progress.formattedStep, '5/5');
+  assert.equal(progress.currentStep, 2);
+  assert.equal(progress.completedCount, 1);
+  assert.equal(progress.completionPercentage, 20); // Still 20% until challenge 2 is completed
+  assert.equal(progress.canAdvance, false);
+
+  // Complete challenge 2 -> advances to 40%
+  session = recordSessionChallengeCompletion(session, 1, {
+    illusionId: session.illusions[1].id,
+    scoreEarned: 130
+  });
+  progress = getSessionProgress(session);
+  assert.equal(progress.completedCount, 2);
+  assert.equal(progress.completionPercentage, 40);
+  assert.equal(progress.canAdvance, true);
 });
 
-test('prevents double-counting when recording the same challenge index twice', () => {
+test('blocks premature advancement when the current challenge is not completed', () => {
   let session = createQuickSession(MOCK_CATALOG);
+
+  // On challenge 0, uncompleted
+  assert.equal(canAdvanceSession(session), false);
+  const attempted = advanceSession(session);
+  // Stays strictly on index 0, not completed
+  assert.equal(attempted.currentIndex, 0);
+  assert.equal(attempted.isCompleted, false);
+
+  // Now complete challenge 0
+  session = recordSessionChallengeCompletion(session, 0, {
+    illusionId: session.illusions[0].id,
+    scoreEarned: 130
+  });
+
+  assert.equal(canAdvanceSession(session), true);
+  session = advanceSession(session);
+  assert.equal(session.currentIndex, 1);
+  // On challenge 1, again blocked until completed
+  assert.equal(canAdvanceSession(session), false);
+  assert.equal(advanceSession(session).currentIndex, 1);
+});
+
+test('blocks premature session conclusion when the 5th challenge is not completed', () => {
+  let session = createQuickSession(MOCK_CATALOG);
+
+  // Complete and advance through challenges 0, 1, 2, 3
+  for (let i = 0; i < 4; i++) {
+    session = recordSessionChallengeCompletion(session, i, {
+      illusionId: session.illusions[i].id,
+      scoreEarned: 130
+    });
+    session = advanceSession(session);
+  }
+
+  // Now at challenge 4 (5/5), NOT completed yet
+  assert.equal(session.currentIndex, 4);
+  assert.equal(session.isCompleted, false);
+  assert.equal(canAdvanceSession(session), false);
+
+  // Attempting to advance/conclude prematurely must be blocked
+  const premature = advanceSession(session);
+  assert.equal(premature.currentIndex, 4);
+  assert.equal(premature.isCompleted, false);
+
+  // Complete the 5th challenge
+  session = recordSessionChallengeCompletion(session, 4, {
+    illusionId: session.illusions[4].id,
+    scoreEarned: 130
+  });
+  assert.equal(canAdvanceSession(session), true);
+
+  // Now advance concludes the session without looping back to 0
+  session = advanceSession(session);
+  assert.equal(session.currentIndex, 4);
+  assert.equal(session.isCompleted, true);
+
+  // Repeated advancement maintains completed state without resetting to 0
+  session = advanceSession(session);
+  assert.equal(session.currentIndex, 4);
+  assert.equal(session.isCompleted, true);
+});
+
+test('prevents double-counting and identifies repeat attempts in session', () => {
+  let session = createQuickSession(MOCK_CATALOG);
+
+  // Before completion: eligible for score
+  assert.equal(shouldAwardSessionScore(session, 0), true);
+  assert.equal(isChallengeCompletedInSession(session, 0), false);
 
   session = recordSessionChallengeCompletion(session, 0, {
     illusionId: 'illusion-1',
@@ -96,7 +179,11 @@ test('prevents double-counting when recording the same challenge index twice', (
     timeElapsed: 4.0
   });
 
-  // Attempting to record again on same index (e.g. user clicked "Tentar de Novo")
+  // After completion: NOT eligible for repeat score in session
+  assert.equal(shouldAwardSessionScore(session, 0), false);
+  assert.equal(isChallengeCompletedInSession(session, 0), true);
+
+  // Attempting to record again preserves initial score
   session = recordSessionChallengeCompletion(session, 0, {
     illusionId: 'illusion-1',
     scoreEarned: 200,
@@ -108,31 +195,6 @@ test('prevents double-counting when recording the same challenge index twice', (
   assert.equal(Object.keys(session.results).length, 1);
 });
 
-test('advanceSession marks isCompleted at 5/5 and does NOT loop to first challenge', () => {
-  let session = createQuickSession(MOCK_CATALOG);
-
-  // Advance through 0, 1, 2, 3, 4
-  session = advanceSession(session); // index 1
-  assert.equal(session.currentIndex, 1);
-  assert.equal(session.isCompleted, false);
-
-  session = advanceSession(session); // index 2
-  session = advanceSession(session); // index 3
-  session = advanceSession(session); // index 4 (5/5)
-  assert.equal(session.currentIndex, 4);
-  assert.equal(session.isCompleted, false);
-
-  // Advance from the 5th challenge: MUST mark completed and NOT reset to 0
-  session = advanceSession(session);
-  assert.equal(session.currentIndex, 4);
-  assert.equal(session.isCompleted, true);
-
-  // Calling advanceSession again preserves completion and does not loop
-  session = advanceSession(session);
-  assert.equal(session.currentIndex, 4);
-  assert.equal(session.isCompleted, true);
-});
-
 test('previousSessionChallenge moves back without falling below 0', () => {
   let session = createQuickSession(MOCK_CATALOG);
 
@@ -140,11 +202,14 @@ test('previousSessionChallenge moves back without falling below 0', () => {
   session = previousSessionChallenge(session);
   assert.equal(session.currentIndex, 0);
 
-  // Advance to 2, then move previous to 1
+  // Complete 0 and 1, advance to 2
+  session = recordSessionChallengeCompletion(session, 0, { illusionId: 'illusion-1', scoreEarned: 130 });
   session = advanceSession(session);
+  session = recordSessionChallengeCompletion(session, 1, { illusionId: 'illusion-2', scoreEarned: 130 });
   session = advanceSession(session);
   assert.equal(session.currentIndex, 2);
 
+  // Go back to 1
   session = previousSessionChallenge(session);
   assert.equal(session.currentIndex, 1);
 });
@@ -180,14 +245,13 @@ test('calculates summary with null best time when no reliable time data exists',
   assert.equal(summary.bestTime, null); // Omitted, not invented!
 });
 
-test('restartQuickSession resets session state completely without mutating original catalog', () => {
+test('restartQuickSession increments sessionNumber and resets state cleanly for fresh progress', () => {
   let session = createQuickSession(MOCK_CATALOG);
-  session = recordSessionChallengeCompletion(session, 0, { illusionId: 'illusion-1', scoreEarned: 130, timeElapsed: 3.0 });
-  session = advanceSession(session);
-  session = advanceSession(session);
-  session = advanceSession(session);
-  session = advanceSession(session);
-  session = advanceSession(session); // isCompleted = true
+  for (let i = 0; i < 5; i++) {
+    session = recordSessionChallengeCompletion(session, i, { illusionId: `illusion-${i + 1}`, scoreEarned: 130 });
+    session = advanceSession(session);
+  }
+  assert.equal(session.isCompleted, true);
 
   const restarted = restartQuickSession(MOCK_CATALOG, session);
 
@@ -197,6 +261,7 @@ test('restartQuickSession resets session state completely without mutating origi
   assert.deepEqual(restarted.results, {});
   assert.equal(restarted.illusions.length, 5);
   assert.equal(restarted.sessionNumber, 2);
+  assert.equal(canAdvanceSession(restarted), false);
   // Next rotation took challenges 6-10
   assert.equal(restarted.illusions[0].id, 'illusion-6');
 });

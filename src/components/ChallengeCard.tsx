@@ -29,6 +29,8 @@ interface Props {
   reducedMotion?: boolean;
   isLastInSession?: boolean;
   nextButtonLabel?: string;
+  isAlreadyCompletedInSession?: boolean;
+  sessionContextKey?: string;
   onAttemptCompleted?: (attempt: ChallengeAttempt, scoreAwarded: number) => void;
 }
 
@@ -41,6 +43,8 @@ export const ChallengeCard: React.FC<Props> = ({
   reducedMotion = false,
   isLastInSession = false,
   nextButtonLabel,
+  isAlreadyCompletedInSession = false,
+  sessionContextKey,
   onAttemptCompleted
 }) => {
   // Interaction phase:
@@ -57,7 +61,7 @@ export const ChallengeCard: React.FC<Props> = ({
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  // Reset state when illusion changes
+  // Reset state when illusion or session context changes
   useEffect(() => {
     setPhase('intro');
     setSelectedInitialChoice(null);
@@ -72,7 +76,7 @@ export const ChallengeCard: React.FC<Props> = ({
       title: illusion.title,
       category: illusion.category
     });
-  }, [illusion.id]);
+  }, [illusion.id, sessionContextKey]);
 
   // Progressive tip auto-reveal timer during timing phase
   useEffect(() => {
@@ -130,7 +134,7 @@ export const ChallengeCard: React.FC<Props> = ({
       } catch {}
     }
 
-    // Save attempt to user progress
+    // Save attempt to user progress unless already accounted for in session
     const points = finalTime > 0 && finalTime < 5 ? 120 : 80;
     const attempt: ChallengeAttempt = {
       illusionId: illusion.id,
@@ -142,9 +146,14 @@ export const ChallengeCard: React.FC<Props> = ({
       scoreEarned: points
     };
 
-    const { updated } = recordAttempt(userProgress, attempt);
-    onProgressUpdate(updated);
-    onAttemptCompleted?.(attempt, points + 50);
+    if (isAlreadyCompletedInSession) {
+      // Repetition/revisit in session: do not duplicate mentalScore or general rewards
+      onAttemptCompleted?.(attempt, 0);
+    } else {
+      const { updated } = recordAttempt(userProgress, attempt);
+      onProgressUpdate(updated);
+      onAttemptCompleted?.(attempt, points + 50);
+    }
 
     trackEvent('challenge_completed', {
       illusionId: illusion.id,
@@ -341,6 +350,12 @@ export const ChallengeCard: React.FC<Props> = ({
                   ? '🎉 Novo recorde pessoal de velocidade de percepção!'
                   : 'Você relatou uma mudança na sua percepção da imagem.'}
               </p>
+
+              {isAlreadyCompletedInSession && (
+                <p className="text-[11px] text-amber-300/90 mt-2 font-medium">
+                  Desafio já contabilizado nesta sessão (sem pontuação duplicada).
+                </p>
+              )}
 
               {/* Action row: Share + Retry */}
               <div className="flex items-center justify-center gap-2 mt-3">

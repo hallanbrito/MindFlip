@@ -13,6 +13,8 @@ import {
   previousSessionChallenge,
   calculateSessionSummary,
   restartQuickSession,
+  canAdvanceSession,
+  isChallengeCompletedInSession,
   QuickSessionState
 } from '../utils/quickSession';
 import {
@@ -83,10 +85,15 @@ export const FeedView: React.FC<Props> = ({
   };
 
   const goToNext = () => {
-    playClickTone();
     if (isSessionActive) {
+      // Block advancement if current challenge has not been completed
+      if (!canAdvanceSession(session)) {
+        return;
+      }
+      playClickTone();
       setSession(prev => advanceSession(prev));
     } else {
+      playClickTone();
       setCurrentIndex(i => (i + 1) % filteredIllusions.length);
     }
     window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
@@ -118,7 +125,7 @@ export const FeedView: React.FC<Props> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSessionActive, session.currentIndex, session.illusions.length, currentIndex, filteredIllusions.length]);
+  }, [isSessionActive, session, currentIndex, filteredIllusions.length]);
 
   // Record completion for active session
   const handleAttemptCompleted = (attempt: ChallengeAttempt, scoreAwarded: number) => {
@@ -133,7 +140,7 @@ export const FeedView: React.FC<Props> = ({
     }
   };
 
-  // Restart session
+  // Restart session with fresh reset and state
   const handlePlayAgain = () => {
     const fresh = restartQuickSession(ILLUSIONS_DATA, session);
     setSession(fresh);
@@ -142,7 +149,7 @@ export const FeedView: React.FC<Props> = ({
     window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
   };
 
-  // Clean exit from session
+  // Clean exit from session (preserves early exit)
   const handleExitSession = () => {
     setIsSessionActive(false);
     setHasStartedPlaying(false);
@@ -153,6 +160,12 @@ export const FeedView: React.FC<Props> = ({
   const currentIllusion = isSessionActive
     ? session.illusions[session.currentIndex] || ILLUSIONS_DATA[0]
     : filteredIllusions[currentIndex] || ILLUSIONS_DATA[0];
+
+  const cardKey = isSessionActive
+    ? `session-${session.sessionNumber}-${session.currentIndex}-${currentIllusion.id}`
+    : `catalog-${currentIllusion.id}`;
+
+  const isCurrentCompleted = isSessionActive && isChallengeCompletedInSession(session, session.currentIndex);
 
   return (
     <div ref={containerRef} className="w-full min-w-0 max-w-full overflow-x-clip flex flex-col items-center pb-16">
@@ -211,7 +224,7 @@ export const FeedView: React.FC<Props> = ({
                     Sessão Rápida
                   </span>
                   <span className="text-white font-bold font-mono">
-                    {sessionProgress.formattedStep}
+                    Desafio {sessionProgress.formattedStep}
                   </span>
                 </div>
 
@@ -232,18 +245,18 @@ export const FeedView: React.FC<Props> = ({
                 </div>
               </div>
 
-              {/* Accessible Visual Progress Bar */}
+              {/* Accessible Visual Progress Bar (calculated strictly from effective completions) */}
               <div
                 role="progressbar"
-                aria-valuenow={sessionProgress.currentStep}
-                aria-valuemin={1}
+                aria-valuenow={sessionProgress.completedCount}
+                aria-valuemin={0}
                 aria-valuemax={sessionProgress.total}
-                aria-label={`Progresso da Sessão Rápida: Desafio ${sessionProgress.currentStep} de ${sessionProgress.total}, ${sessionProgress.completedCount} concluídos, ${sessionProgress.remainingCount} restantes`}
+                aria-label={`Progresso da Sessão Rápida: ${sessionProgress.completedCount} de ${sessionProgress.total} desafios concluídos (${sessionProgress.completionPercentage}%). Posição: desafio ${sessionProgress.currentStep} de ${sessionProgress.total}.`}
                 className="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden"
               >
                 <div
                   className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-300"
-                  style={{ width: `${sessionProgress.percentage}%` }}
+                  style={{ width: `${sessionProgress.completionPercentage}%` }}
                 />
               </div>
 
@@ -267,9 +280,22 @@ export const FeedView: React.FC<Props> = ({
                   <button
                     type="button"
                     onClick={goToNext}
-                    className="p-1 rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors"
-                    title={sessionProgress.isLastChallenge ? 'Concluir Sessão' : 'Próximo Desafio'}
-                    aria-label={sessionProgress.isLastChallenge ? 'Concluir sessão' : 'Próximo desafio da sessão'}
+                    disabled={!canAdvanceSession(session)}
+                    className={`p-1 rounded-lg bg-slate-900 border border-slate-800 transition-colors ${
+                      !canAdvanceSession(session)
+                        ? 'opacity-40 cursor-not-allowed text-slate-600'
+                        : 'hover:bg-slate-800 text-slate-300 hover:text-white'
+                    }`}
+                    title={
+                      !canAdvanceSession(session)
+                        ? 'Complete o desafio atual para avançar'
+                        : sessionProgress.isLastChallenge
+                        ? 'Concluir Sessão'
+                        : 'Próximo Desafio'
+                    }
+                    aria-label={
+                      sessionProgress.isLastChallenge ? 'Concluir sessão' : 'Próximo desafio da sessão'
+                    }
                   >
                     <ChevronDown className="w-4 h-4" />
                   </button>
@@ -365,7 +391,7 @@ export const FeedView: React.FC<Props> = ({
           {/* Active Challenge Card */}
           <div id="active-challenge" className="w-full min-w-0 max-w-full px-3 sm:px-4 flex justify-center">
             <ChallengeCard
-              key={currentIllusion.id}
+              key={cardKey}
               illusion={currentIllusion}
               userProgress={userProgress}
               onProgressUpdate={onProgressUpdate}
@@ -376,6 +402,8 @@ export const FeedView: React.FC<Props> = ({
               nextButtonLabel={
                 isSessionActive && sessionProgress.isLastChallenge ? 'CONCLUIR SESSÃO' : undefined
               }
+              isAlreadyCompletedInSession={isCurrentCompleted}
+              sessionContextKey={cardKey}
               onAttemptCompleted={handleAttemptCompleted}
             />
           </div>
