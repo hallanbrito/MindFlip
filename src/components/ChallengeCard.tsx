@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { Illusion, UserProgress } from '../types';
+import { Illusion, UserProgress, ChallengeAttempt } from '../types';
 import { IllusionEngine } from './illusions/IllusionEngine';
 import { getScientificReferences } from '../data/scientificReferences';
 import { playClickTone, playFlipWhoosh, playSuccessTone } from '../utils/audio';
@@ -27,6 +27,9 @@ interface Props {
   onNextChallenge: () => void;
   onChallengeFriend: (illusion: Illusion, timeElapsed?: number) => void;
   reducedMotion?: boolean;
+  isLastInSession?: boolean;
+  nextButtonLabel?: string;
+  onAttemptCompleted?: (attempt: ChallengeAttempt, scoreAwarded: number) => void;
 }
 
 export const ChallengeCard: React.FC<Props> = ({
@@ -35,7 +38,10 @@ export const ChallengeCard: React.FC<Props> = ({
   onProgressUpdate,
   onNextChallenge,
   onChallengeFriend,
-  reducedMotion = false
+  reducedMotion = false,
+  isLastInSession = false,
+  nextButtonLabel,
+  onAttemptCompleted
 }) => {
   // Interaction phase:
   // 'intro' -> user answers initial question or looks at illusion
@@ -126,7 +132,7 @@ export const ChallengeCard: React.FC<Props> = ({
 
     // Save attempt to user progress
     const points = finalTime > 0 && finalTime < 5 ? 120 : 80;
-    const { updated } = recordAttempt(userProgress, {
+    const attempt: ChallengeAttempt = {
       illusionId: illusion.id,
       timestamp: Date.now(),
       timeElapsed: finalTime,
@@ -134,9 +140,11 @@ export const ChallengeCard: React.FC<Props> = ({
       initialPerception: selectedInitialChoice || undefined,
       flipped: true,
       scoreEarned: points
-    });
+    };
 
+    const { updated } = recordAttempt(userProgress, attempt);
     onProgressUpdate(updated);
+    onAttemptCompleted?.(attempt, points + 50);
 
     trackEvent('challenge_completed', {
       illusionId: illusion.id,
@@ -446,7 +454,9 @@ export const ChallengeCard: React.FC<Props> = ({
             {/* Next Challenge CTA */}
             <div className="w-full flex flex-col items-center">
               <span className="text-[11px] text-slate-400 mb-2 font-medium">
-                O próximo desafio costuma surpreender os olhos...
+                {isLastInSession
+                  ? 'Você concluiu os 5 desafios da sua sessão rápida!'
+                  : 'O próximo desafio costuma surpreender os olhos...'}
               </span>
               <button
                 type="button"
@@ -454,9 +464,9 @@ export const ChallengeCard: React.FC<Props> = ({
                   playClickTone();
                   onNextChallenge();
                 }}
-                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:brightness-110 active:scale-98 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition-all uppercase tracking-wide"
+                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:brightness-110 active:scale-98 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition-all uppercase tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
               >
-                <span>PRÓXIMO DESAFIO</span>
+                <span>{nextButtonLabel || (isLastInSession ? 'CONCLUIR SESSÃO' : 'PRÓXIMO DESAFIO')}</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
